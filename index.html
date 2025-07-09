@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.40">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="GoGentle">
+
+<title>强化学习基础 – RLhandbook</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-74d526360349614d085bfedd2de7155a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">RLhandbook</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="./index.html" aria-current="page"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">强化学习基础</h1>
+                      </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>GoGentle </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">Jul 8, 2025</p>
+      </div>
+    </div>
+    
+      <div>
+      <div class="quarto-title-meta-heading">Modified</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date-modified">Jul 9, 2025</p>
+      </div>
+    </div>
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="1">
+    <h2 id="toc-title">目录</h2>
+   
+  <ul class="collapse">
+  <li><a href="#基础内容" id="toc-基础内容" class="nav-link active" data-scroll-target="#基础内容"><span class="header-section-number">1</span> 基础内容</a>
+  <ul class="collapse">
+  <li><a href="#马尔可夫决策过程" id="toc-马尔可夫决策过程" class="nav-link" data-scroll-target="#马尔可夫决策过程"><span class="header-section-number">1.1</span> 马尔可夫决策过程</a></li>
+  <li><a href="#sec-dynpa" id="toc-sec-dynpa" class="nav-link" data-scroll-target="#sec-dynpa"><span class="header-section-number">1.2</span> 动态规划算法</a></li>
+  </ul></li>
+  </ul>
+</nav>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+
+<section id="基础内容" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> 基础内容</h1>
+<section id="马尔可夫决策过程" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="马尔可夫决策过程"><span class="header-section-number">1.1</span> 马尔可夫决策过程</h2>
+<section id="马尔可夫奖励过程" class="level3" data-number="1.1.1">
+<h3 data-number="1.1.1" class="anchored" data-anchor-id="马尔可夫奖励过程"><span class="header-section-number">1.1.1</span> 马尔可夫奖励过程</h3>
+<p>在马尔可夫过程的基础上加入奖励函数<span class="math inline">r</span>和折扣因子<span class="math inline">\gamma</span>,就可以得到<strong>马尔可夫奖励过程</strong>（Markov Reward Process, MRP）。一个马尔可夫奖励过程由<span class="math inline">\langle S,\mathcal{P},r,\gamma\rangle</span>构成。</p>
+<section id="回报" class="level4">
+<h4 class="anchored" data-anchor-id="回报">回报</h4>
+<p>在一个MRP中，从第<span class="math inline">t</span>时刻状态<span class="math inline">S_t</span>开始，直到终止状态时，所有奖励的衰减之和称为<strong>回报</strong><span class="math inline">G_t</span>（Return），公式如下：</p>
+<p><span class="math display">
+G_t=R_t+\gamma R_{t+1}+\gamma^2 R_{t+2}+\dots=\sum_{k=0}^{\infty}\gamma^k R_{t+k},
+</span> 其中，<span class="math inline">R_t</span>表示在时刻<span class="math inline">t</span>获得的奖励。</p>
+</section>
+<section id="价值函数" class="level4">
+<h4 class="anchored" data-anchor-id="价值函数">价值函数</h4>
+<p>在MRP中，一个状态的期望回报（即从这个状态出发的未来累积奖励的期望）被称为这个状态的<strong>价值</strong>（Value）。所有状态的价值就组成了<strong>价值函数</strong>（Value function），价值函数的输入为某个状态，输出为这个状态的价值。我们将价值函数写成</p>
+<p><span class="math display">
+\begin{aligned}
+V(s)&amp;=\mathbb{E}\left[G_t\mid S_t=s\right]\\
+&amp;= \mathbb{E}\left[ R_t+\gamma R_{t+1}+\gamma^2 R_{t+2} +\dots\mid S_t=s\right]\\
+&amp;=\mathbb{E}\left[ R_t+\gamma (R_{t+1}+\gamma R_{t+2} +\dots)\mid S_t=s\right]\\
+&amp;=\mathbb{E}\left[ R_t+\gamma G_{t+1}\mid S_t=s \right]\\
+&amp;=\mathbb{E}\left[ R_t+\gamma V(S_{t+1})\mid S_t=s \right]
+\end{aligned}
+</span></p>
+<p>在上式的最后一个等号中，一方面，即时奖励的期望正是奖励函数的输出，即<span class="math inline">\mathbb{E}\left[ R_t\mid S_t=s \right]=r(s);</span>另一方面，等式中剩余部分<span class="math inline">\mathbb{E}\left[\gamma V(S_{t+1})\mid S_t=s\right]</span>可以根据从状态<span class="math inline">s</span>出发的转移概率得到，即</p>
+<p><span class="math display">
+V(s)=r(s)+\gamma \sum_{s'\in \mathcal{S}}p(s'\mid s)V(s')
+</span></p>
+<p>上式就是MRP中非常有名的<strong>贝尔曼方程</strong>（Bellman equation），对每一个状态都成立。若通过矩阵运算可以得到以下解析解：</p>
+<p><span class="math display">
+\begin{aligned}
+\mathcal{V}&amp;=\mathcal{R}+\gamma\mathcal{P}\mathcal{V}\\
+\mathcal{V}&amp;=(I-\gamma\mathcal{P})^{-1}\mathcal{R}
+\end{aligned}
+</span> 其中<span class="math inline">\mathcal{V,R,P}</span>均为向量或矩阵。以上解析解的计算复杂度是<span class="math inline">O(n^3),</span>其中<span class="math inline">n</span>是状态个数，因此这种方法只适用于很小的MRP。求解较大规模的MRP奖励过程中的价值函数时，可以使用<strong>动态规划</strong>、<strong>蒙特卡洛</strong>、<strong>时序差分</strong>，这些方法将在之后的章节介绍。</p>
+<p>接下来编写代码来实现求解价值函数的解析解方法，并据此计算该马尔可夫奖励过程中所有状态的价值。</p>
+<div id="5b87f7f8" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> compute(P, rewards, gamma, states_num):</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">''' 利用贝尔曼方程的矩阵形式计算解析解,states_num是MRP的状态数 '''</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    rewards <span class="op">=</span> np.array(rewards).reshape((<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>))  <span class="co">#将rewards写成列向量形式</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    value <span class="op">=</span> np.dot(np.linalg.inv(np.eye(states_num, states_num) <span class="op">-</span> gamma <span class="op">*</span> P),</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>                   rewards)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> value</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="马尔可夫决策过程-1" class="level3" data-number="1.1.2">
+<h3 data-number="1.1.2" class="anchored" data-anchor-id="马尔可夫决策过程-1"><span class="header-section-number">1.1.2</span> 马尔可夫决策过程</h3>
+<p>如果有一个外界的“刺激”来共同改变这个随机过程，就有了<strong>马尔可夫决策过程</strong>（MDP）。我们将这个来自外界的刺激称为<strong>智能体</strong>（Agent）的动作，在MRP的基础上加入动作，就得到了MDP。MDP有元组<span class="math inline">\langle \mathcal{S,A,P},r,\gamma\rangle</span>构成。</p>
+<section id="策略" class="level4">
+<h4 class="anchored" data-anchor-id="策略">策略</h4>
+<p>智能体的<strong>策略</strong>（Policy）通常用字母<span class="math inline">\pi</span>表示。策略<span class="math inline">\pi(a|s)=P(A_t=a|S_t=s)</span>是一个函数，表示在输入状态<span class="math inline">s</span>情况下采取动作<span class="math inline">a</span>的概率。当一个策略是<strong>确定性策略</strong>（Deterministic policy）时，它在每个状态只输出一个确定性的动作，即只有该动作的概率为<span class="math inline">1</span>,其他动作的概率为<span class="math inline">0;</span> 当一个策略是<strong>随机性策略</strong>（Stochastic policy）时，它在每个状态时输出的是关于动作的概率分布，然后根据该分布进行采样就可以得到一个动作。</p>
+<p>在 MDP 中，由于马尔可夫性质的存在，策略只需要与当前状态有关，不需要考虑历史状态。回顾一下在 MRP 中的价值函数，在 MDP 中也同样可以定义类似的价值函数。但此时的价值函数与策略有关，这意为着对于两个不同的策略来说，它们在同一个状态下的价值也很可能是不同的。这很好理解，因为不同的策略会采取不同的动作，从而之后会遇到不同的状态，以及获得不同的奖励，所以它们的累积奖励的期望也就不同，即状态价值不同。</p>
+</section>
+<section id="状态价值函数" class="level4">
+<h4 class="anchored" data-anchor-id="状态价值函数">状态价值函数</h4>
+<p>我们用<span class="math inline">V^{\pi}(s)</span>表示在MDP中基于策略<span class="math inline">\pi</span>的状态价值函数（State-value function），定义在从状态<span class="math inline">s</span>出发遵循策略<span class="math inline">\pi</span>能获得的期望回报，数学表达为</p>
+<p><span class="math display">
+V^{\pi}(s)=\mathbb{E}_{\pi}[G_t|S_t=s]
+</span></p>
+</section>
+<section id="动作价值函数" class="level4">
+<h4 class="anchored" data-anchor-id="动作价值函数">动作价值函数</h4>
+<p>不同于MRP，MDP中由于动作的存在我们定义一个<strong>动作价值函数</strong>（Action-value function）。我们用<span class="math inline">Q^{\pi}(s,a)</span>表示在MDP遵循策略<span class="math inline">\pi</span>时，对当前状态<span class="math inline">s</span>执行动作<span class="math inline">a</span>得到的期望回报：</p>
+<p><span class="math display">
+Q^{\pi}(s,a)=\mathbb{E}_{\pi}[G_t|S_t=s,A_t=a]
+</span></p>
+<p>状态价值函数和动作价值函数之间的关系：</p>
+<p>在使用策略<span class="math inline">\pi</span>时，状态<span class="math inline">s</span>的价值等于在该状态下基于策略<span class="math inline">\pi</span>采取所有动作的概率与相应价值相乘再求和的结果：</p>
+<p><span class="math display">
+V^{\pi}(s)=\sum_{a\in\mathcal{A}}\pi(a|s)Q^{\pi}(s,a)
+</span></p>
+<p>在使用策略<span class="math inline">\pi</span>时，状态<span class="math inline">s</span>下采取动作<span class="math inline">a</span>的价值等于即时奖励加上经过衰减后的所有可能的下一个状态转移概率与相应价值的乘积：</p>
+<p><span class="math display">
+Q^{\pi}(s,a)=r(s,a)+\gamma\sum_{s'\in\mathcal{S}}P(s'|s,a)V^{\pi}(s')
+</span></p>
+</section>
+<section id="贝尔曼期望方程" class="level4">
+<h4 class="anchored" data-anchor-id="贝尔曼期望方程">贝尔曼期望方程</h4>
+<p>在贝尔曼方程中加上期望二字是为了与接下来的贝尔曼最优方程进行区分。我们通过加单推到就可以分别得到两个价值函数的<strong>贝尔曼期望方程</strong>（Bellman Expect Equation）：</p>
+<p><span class="math display">
+\begin{aligned}
+V^{\pi}(s)&amp;=\mathbb{E}_{\pi}\left[R_t+\gamma V^{\pi}(S_{t+1})|S_t=s\right]\\
+&amp;=\sum_{a\in\mathcal{A}}\pi(a|s)\left( r(s,a)+\gamma\sum_{s'\in\mathcal{S}}p(s'|s,a)V^{\pi}(s')\right)\\
+\\
+Q^{\pi}(s,a)&amp;=\mathbb{E}_{\pi}\left[R_t+\gamma Q^{\pi}(S_{t+1},A_{t+1}|S_t=s, A_t=a)\right]\\
+&amp;=r(s,a)+\gamma\sum_{s'\in\mathcal{S}}p(s'|s,a)\sum_{a'\in\mathcal{A}}\pi(a'|s')Q^{\pi}(s',a)
+\end{aligned}
+</span></p>
+<p>价值函数和贝尔曼方程是强化学习非常重要的组成部分，之后的一些强化学习算法都是据此推导出来的。</p>
+<p>现在我们考虑一个MDP的简单例子如@fig-mdp ，其中每个绿色圆圈代表一个状态，一共有<span class="math inline">s_1\sim s_5</span>这5个状态。黑色实线箭头代表可以采取的动作，黄色小圆圈代表动作。需要注意的是，并非在每个状态都能采取所有动作，例如在<span class="math inline">s_1,</span>智能体只能采取”保持<span class="math inline">s_1</span>“和”前往<span class="math inline">s_2</span>“这两个动作，无法采取其他动作。</p>
+<p>每个黄色小圆圈旁的红色数字代表在某个状态下采取某个动作能获得的奖励。虚线箭头代表采取动作后可能转移到的状态，箭头边上的带方框的数字代表转移概率，如果没有数字则表示转移概率为1.例如，在<span class="math inline">s_2</span>下，如果采取动作”前往<span class="math inline">s_3</span>“就能得到奖励<span class="math inline">-2,</span>并且以概率1转移到<span class="math inline">s_3</span>;在<span class="math inline">s_4</span>下，如果采取”概率前往”这个动作，就能得到奖励<span class="math inline">1</span>,并且会分别以概率<span class="math inline">0.2,0.4,0.4</span>转移到<span class="math inline">s_2,s_3</span>或<span class="math inline">s_4</span>.</p>
+<div id="fig-mdp" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-mdp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://hrl.boyuai.com/static/mdp.aaacb46a.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-mdp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;1： MDP一个简单例子
+</figcaption>
+</figure>
+</div>
+<p>接下来我们编写代码来表示@fig-mdp 中的MDP，并定义两个策略，第一个策略是一个完全随机策略，即在每个状态下，智能体会以同样的概率选取它可能采取的动作。例如，在<span class="math inline">s_1</span>下智能体会以<span class="math inline">0.5,0.5</span>的概率选取动作”保持<span class="math inline">s_1</span>“和”前往<span class="math inline">s_2</span>“.第二个策略是一个提前设定的策略。</p>
+<div id="723b2bc7" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>S <span class="op">=</span> [<span class="st">"s1"</span>, <span class="st">"s2"</span>, <span class="st">"s3"</span>, <span class="st">"s4"</span>, <span class="st">"s5"</span>]  <span class="co"># 状态集合</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> [<span class="st">"保持s1"</span>, <span class="st">"前往s1"</span>, <span class="st">"前往s2"</span>, <span class="st">"前往s3"</span>, <span class="st">"前往s4"</span>, <span class="st">"前往s5"</span>, <span class="st">"概率前往"</span>]  <span class="co"># 动作集合</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 状态转移函数</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>P <span class="op">=</span> {</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"s1-保持s1-s1"</span>: <span class="fl">1.0</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"s1-前往s2-s2"</span>: <span class="fl">1.0</span>,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"s2-前往s1-s1"</span>: <span class="fl">1.0</span>,</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"s2-前往s3-s3"</span>: <span class="fl">1.0</span>,</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"s3-前往s4-s4"</span>: <span class="fl">1.0</span>,</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"s3-前往s5-s5"</span>: <span class="fl">1.0</span>,</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"s4-前往s5-s5"</span>: <span class="fl">1.0</span>,</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"s4-概率前往-s2"</span>: <span class="fl">0.2</span>,</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"s4-概率前往-s3"</span>: <span class="fl">0.4</span>,</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">"s4-概率前往-s4"</span>: <span class="fl">0.4</span>,</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 奖励函数</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>R <span class="op">=</span> {</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">"s1-保持s1"</span>: <span class="op">-</span><span class="dv">1</span>,</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    <span class="st">"s1-前往s2"</span>: <span class="dv">0</span>,</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    <span class="st">"s2-前往s1"</span>: <span class="op">-</span><span class="dv">1</span>,</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    <span class="st">"s2-前往s3"</span>: <span class="op">-</span><span class="dv">2</span>,</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    <span class="st">"s3-前往s4"</span>: <span class="op">-</span><span class="dv">2</span>,</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>    <span class="st">"s3-前往s5"</span>: <span class="dv">0</span>,</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    <span class="st">"s4-前往s5"</span>: <span class="dv">10</span>,</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>    <span class="st">"s4-概率前往"</span>: <span class="dv">1</span>,</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>gamma <span class="op">=</span> <span class="fl">0.5</span>  <span class="co"># 折扣因子</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>MDP <span class="op">=</span> (S, A, P, R, gamma)</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="co"># 策略1,随机策略</span></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>Pi_1 <span class="op">=</span> {</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>    <span class="st">"s1-保持s1"</span>: <span class="fl">0.5</span>,</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>    <span class="st">"s1-前往s2"</span>: <span class="fl">0.5</span>,</span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>    <span class="st">"s2-前往s1"</span>: <span class="fl">0.5</span>,</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>    <span class="st">"s2-前往s3"</span>: <span class="fl">0.5</span>,</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>    <span class="st">"s3-前往s4"</span>: <span class="fl">0.5</span>,</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>    <span class="st">"s3-前往s5"</span>: <span class="fl">0.5</span>,</span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>    <span class="st">"s4-前往s5"</span>: <span class="fl">0.5</span>,</span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>    <span class="st">"s4-概率前往"</span>: <span class="fl">0.5</span>,</span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a><span class="co"># 策略2</span></span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>Pi_2 <span class="op">=</span> {</span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>    <span class="st">"s1-保持s1"</span>: <span class="fl">0.6</span>,</span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>    <span class="st">"s1-前往s2"</span>: <span class="fl">0.4</span>,</span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>    <span class="st">"s2-前往s1"</span>: <span class="fl">0.3</span>,</span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>    <span class="st">"s2-前往s3"</span>: <span class="fl">0.7</span>,</span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>    <span class="st">"s3-前往s4"</span>: <span class="fl">0.5</span>,</span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>    <span class="st">"s3-前往s5"</span>: <span class="fl">0.5</span>,</span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>    <span class="st">"s4-前往s5"</span>: <span class="fl">0.1</span>,</span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>    <span class="st">"s4-概率前往"</span>: <span class="fl">0.9</span>,</span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a><span class="co"># 把输入的两个字符串通过“-”连接,便于使用上述定义的P、R变量</span></span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> join(str1, str2):</span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> str1 <span class="op">+</span> <span class="st">'-'</span> <span class="op">+</span> str2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>接下来我们想要计算该MDP下，一个策略<span class="math inline">\pi</span>的状态价值函数。我们现有的工具是MRP的解析解方法，一个自然的想法是给定一个MDP和一个策略<span class="math inline">\pi</span>,我们是否可以将其转化为一个MRP？答案是肯定的，我们可以将策略的动作选择进行<strong>边缘化</strong>（Marginalization），就可以得到没有动作的MRP了。具体来说，对于某一个状态，我们根据策略所有动作的概率进行加权，得到的奖励和就可以认为是一个MRP在该状态下的奖励，即： <span class="math display">
+r'(s)=\sum_{a\in\mathcal{A}}\pi(a|s)r(s,a)
+</span></p>
+<p>同理，我们计算采取动作的概率与使<span class="math inline">s</span>转移到<span class="math inline">s'</span>的概率的乘积，再将这些乘积相加，其和就是一个MRP的状态从<span class="math inline">s</span>转移至<span class="math inline">s'</span>的概率：</p>
+<p><span class="math display">
+P'(s'|s)=\sum_{a\in\mathcal{A}}\pi(a|s)
+</span></p>
+<p>于是，我们构建得到了一个MRP:<span class="math inline">\langle \mathcal{S},P',r',\gamma\rangle</span>.根据价值函数的定义可以发现，转化前的 MDP 的状态价值函数和转化后的 MRP 的价值函数是一样的。于是我们可以用 MRP 中计算价值函数的解析解来计算这个 MDP 中该策略的状态价值函数。</p>
+<p>接下来，我们用代码实现该方法，计算用随即策略<code>Pi_1</code>时的状态价值函数，为了简单起见，我们将直接给出转化后的MRP的状态转移矩阵和奖励函数。</p>
+<div id="f9fab9a5" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>gamma <span class="op">=</span> <span class="fl">0.5</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 转化后的MRP的状态转移矩阵</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>P_from_mdp_to_mrp <span class="op">=</span> [</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    [<span class="fl">0.5</span>, <span class="fl">0.5</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>],</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    [<span class="fl">0.5</span>, <span class="fl">0.0</span>, <span class="fl">0.5</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>],</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    [<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.5</span>, <span class="fl">0.5</span>],</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    [<span class="fl">0.0</span>, <span class="fl">0.1</span>, <span class="fl">0.2</span>, <span class="fl">0.2</span>, <span class="fl">0.5</span>],</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    [<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">1.0</span>],</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>P_from_mdp_to_mrp <span class="op">=</span> np.array(P_from_mdp_to_mrp)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>R_from_mdp_to_mrp <span class="op">=</span> [<span class="op">-</span><span class="fl">0.5</span>, <span class="op">-</span><span class="fl">1.5</span>, <span class="op">-</span><span class="fl">1.0</span>, <span class="fl">5.5</span>, <span class="dv">0</span>]</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>V <span class="op">=</span> compute(P_from_mdp_to_mrp, R_from_mdp_to_mrp, gamma, <span class="dv">5</span>)</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"MDP中每个状态价值分别为</span><span class="ch">\n</span><span class="st">"</span>, V)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>MDP中每个状态价值分别为
+ [[-1.22555411]
+ [-1.67666232]
+ [ 0.51890482]
+ [ 6.0756193 ]
+ [ 0.        ]]</code></pre>
+</div>
+</div>
+<p>知道了状态价值函数<span class="math inline">V^{\pi}(s)</span>后，我们可以计算动作价值函数<span class="math inline">Q^{\pi}(s,a).</span>例如<span class="math inline">(s_4,\text{概率前往})</span>的动作价值为2.152，根据以下公式可以计算得到：</p>
+<p><span class="math display">
+Q^{\pi}(s,a)=r(s,a)+\gamma\sum_{s'\in\mathcal{S}}P(s'|s,a)V^{\pi}(s')
+</span></p>
+<p>这个 MRP 解析解的方法在状态动作集合比较大的时候不是很适用，那有没有其他的方法呢？第 <a href="#sec-dynpa" class="quarto-xref">章节&nbsp;1.2</a> 章将介绍用动态规划算法来计算得到价值函数。<a href="#sec-mc" class="quarto-xref">章节&nbsp;1.1.3</a> 节将介绍用蒙特卡洛方法来近似估计这个价值函数，用蒙特卡洛方法的好处在于我们不需要知道 MDP 的状态转移函数和奖励函数，它可以得到一个近似值，并且采样数越多越准确。</p>
+</section>
+</section>
+<section id="sec-mc" class="level3" data-number="1.1.3">
+<h3 data-number="1.1.3" class="anchored" data-anchor-id="sec-mc"><span class="header-section-number">1.1.3</span> 蒙特卡洛方法</h3>
+<p><strong>蒙特卡洛方法</strong>（Monte-Carlo methods）也被称为统计模拟方法，是一种基于概率统计的数值计算方法。运用MC方法时我们通常使用重复随机抽样，然后运用概率统计方法来从抽样结果中归纳出我们想求的目标的数值估计。一个简单的例子是用蒙特卡洛方法来计算圆的面积。例如，在正方形内部随机产生若干个点，细数落在圆中点的个数，圆的面积与正方形面积之比就等于圆中点的个数与正方形中点的个数之比。如果我们随机产生的点的个数越多，计算得到圆的面积就越接近于真实的圆的面积。</p>
+<p>我们现在介绍如何用蒙特卡洛方法来估计一个策略在一个马尔可夫决策过程中的状态价值函数。回忆一下，一个状态的价值是它的期望回报，那么一个很直观的想法就是用策略在 MDP 上采样很多条序列，计算从这个状态出发的回报再求其期望就可以了，公式如下：</p>
+<p><span class="math display">
+V^{\pi}(s)=\mathbb{E}_{\pi}\left[ G_t|S_t=s \right]\approx \frac{1}{N}\sum_{i=1}^N G_t^{(i)}
+</span></p>
+<p>在一条序列中，可能没有出现过这个状态，可能只出现过一次这个状态，也可能出现过很多次这个状态。我们介绍的蒙特卡洛价值估计方法会在该状态每一次出现时计算它的回报。还有一种选择是一条序列只计算一次回报，也就是这条序列第一次出现该状态时计算后面的累积奖励，而后面再次出现该状态时，该状态就被忽略了。假设我们现在用策略<span class="math inline">\pi</span>从<span class="math inline">s</span>开始采样序列，据此来计算状态价值。我们为每一个状态维护一个计数器和总回报，计算状态价值的具体过程如下所示。</p>
+<ol type="1">
+<li><p>使用策略<span class="math inline">\pi</span> 采样若干条序列： <span class="math display">
+s_0^{(i)}\overset{a_0^{(i)}}{\rightarrow} r_0^{(i)},s_1^{(i)}\overset{a_1^{(i)}}{\rightarrow} r_1^{(i)},
+s_2^{(i)}\overset{a_2^{(i)}}{\rightarrow},...,\overset{a_{T-1}^{(i)}}{\rightarrow} r_{T-1}^{(i)},s_T^{(i)}
+</span></p></li>
+<li><p>对每一条序列中的每一时间步<span class="math inline">t</span>的状态<span class="math inline">s</span>进行以下操作：</p>
+<ul>
+<li>更新状态<span class="math inline">s</span>的计数器<span class="math inline">N(s)\leftarrow N(s)+1</span>;</li>
+<li>更新状态<span class="math inline">s</span>的总回报<span class="math inline">M(s)\leftarrow M(s)+G_t</span>;</li>
+</ul></li>
+<li><p>每一个状态的价值被估计为回报的平均值<span class="math inline">V(s)=\=M(s)/N(s)</span>.</p></li>
+</ol>
+<p>根据大数定律，当<span class="math inline">N(s)\rightarrow \infty</span>,有<span class="math inline">V(s)\rightarrow V^{\pi}(s)</span>. 计算回报的期望时，除了可以把所有的回报加起来除以次数，还有一种增量更新的方法。对于每个状态<span class="math inline">s</span>和对应回报<span class="math inline">G,</span>进行如下计算：</p>
+<ul>
+<li><span class="math inline">N(s)\leftarrow N(s)+1</span></li>
+<li><span class="math inline">V(s)\leftarrow V(s)+\frac{G-V(s)}{N(s)}</span></li>
+</ul>
+<p>接下来我们用代码定义一个采样函数，采样函数需要遵守状态转移矩阵和相应策略，每次将<code>(s,a,r,s_next)</code>元组放入序列中，直到到达终止序列。然后我们通过该函数，用随即策略在@fig-mdp 的MDP中随机采样几条序列。</p>
+<div id="f5a0bcb5" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> sample(MDP, Pi, timestep_max, number):</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">''' 采样函数,策略Pi,限制最长时间步timestep_max,总共采样序列数number '''</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    S, A, P, R, gamma <span class="op">=</span> MDP</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    episodes <span class="op">=</span> []</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(number):</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        episode <span class="op">=</span> []</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        timestep <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        s <span class="op">=</span> S[np.random.randint(<span class="dv">4</span>)]  <span class="co"># 随机选择一个除s5以外的状态s作为起点</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 当前状态为终止状态或者时间步太长时,一次采样结束</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">while</span> s <span class="op">!=</span> <span class="st">"s5"</span> <span class="kw">and</span> timestep <span class="op">&lt;=</span> timestep_max:</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>            timestep <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>            rand, temp <span class="op">=</span> np.random.rand(), <span class="dv">0</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>            <span class="co"># 在状态s下根据策略选择动作</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> a_opt <span class="kw">in</span> A:</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>                temp <span class="op">+=</span> Pi.get(join(s, a_opt), <span class="dv">0</span>)</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> temp <span class="op">&gt;</span> rand:</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>                    a <span class="op">=</span> a_opt</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>                    r <span class="op">=</span> R.get(join(s, a), <span class="dv">0</span>)</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">break</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>            rand, temp <span class="op">=</span> np.random.rand(), <span class="dv">0</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>            <span class="co"># 根据状态转移概率得到下一个状态s_next</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> s_opt <span class="kw">in</span> S:</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>                temp <span class="op">+=</span> P.get(join(join(s, a), s_opt), <span class="dv">0</span>)</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> temp <span class="op">&gt;</span> rand:</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>                    s_next <span class="op">=</span> s_opt</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">break</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>            episode.append((s, a, r, s_next))  <span class="co"># 把（s,a,r,s_next）元组放入序列中</span></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>            s <span class="op">=</span> s_next  <span class="co"># s_next变成当前状态,开始接下来的循环</span></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>        episodes.append(episode)</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> episodes</span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a><span class="co"># 采样5次,每个序列最长不超过20步</span></span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>episodes <span class="op">=</span> sample(MDP, Pi_1, <span class="dv">20</span>, <span class="dv">5</span>)</span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'第一条序列</span><span class="ch">\n</span><span class="st">'</span>, episodes[<span class="dv">0</span>])</span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'第二条序列</span><span class="ch">\n</span><span class="st">'</span>, episodes[<span class="dv">1</span>])</span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'第五条序列</span><span class="ch">\n</span><span class="st">'</span>, episodes[<span class="dv">4</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>第一条序列
+ [('s3', '前往s4', -2, 's4'), ('s4', '前往s5', 10, 's5')]
+第二条序列
+ [('s3', '前往s4', -2, 's4'), ('s4', '概率前往', 1, 's2'), ('s2', '前往s3', -2, 's3'), ('s3', '前往s5', 0, 's5')]
+第五条序列
+ [('s2', '前往s1', -1, 's1'), ('s1', '前往s2', 0, 's2'), ('s2', '前往s3', -2, 's3'), ('s3', '前往s4', -2, 's4'), ('s4', '前往s5', 10, 's5')]</code></pre>
+</div>
+</div>
+<div id="b77591c0" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 对所有采样序列计算所有状态的价值</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> MC(episodes, V, N, gamma):</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> episode <span class="kw">in</span> episodes:</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>        G <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(episode) <span class="op">-</span> <span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>):  <span class="co">#一个序列从后往前计算</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>            (s, a, r, s_next) <span class="op">=</span> episode[i]</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>            G <span class="op">=</span> r <span class="op">+</span> gamma <span class="op">*</span> G</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>            N[s] <span class="op">=</span> N[s] <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>            V[s] <span class="op">=</span> V[s] <span class="op">+</span> (G <span class="op">-</span> V[s]) <span class="op">/</span> N[s]</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>timestep_max <span class="op">=</span> <span class="dv">20</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 采样1000次,可以自行修改</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>episodes <span class="op">=</span> sample(MDP, Pi_1, timestep_max, <span class="dv">1000</span>)</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>gamma <span class="op">=</span> <span class="fl">0.5</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>V <span class="op">=</span> {<span class="st">"s1"</span>: <span class="dv">0</span>, <span class="st">"s2"</span>: <span class="dv">0</span>, <span class="st">"s3"</span>: <span class="dv">0</span>, <span class="st">"s4"</span>: <span class="dv">0</span>, <span class="st">"s5"</span>: <span class="dv">0</span>}</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>N <span class="op">=</span> {<span class="st">"s1"</span>: <span class="dv">0</span>, <span class="st">"s2"</span>: <span class="dv">0</span>, <span class="st">"s3"</span>: <span class="dv">0</span>, <span class="st">"s4"</span>: <span class="dv">0</span>, <span class="st">"s5"</span>: <span class="dv">0</span>}</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>MC(episodes, V, N, gamma)</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"使用蒙特卡洛方法计算MDP的状态价值为</span><span class="ch">\n</span><span class="st">"</span>, V)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>使用蒙特卡洛方法计算MDP的状态价值为
+ {'s1': -1.2199909859035727, 's2': -1.6944299913955496, 's3': 0.4373151566032693, 's4': 5.962755391182896, 's5': 0}</code></pre>
+</div>
+</div>
+<p>可以看到用蒙特卡洛方法估计得到的状态价值和我们用 MRP 解析解得到的状态价值是很接近的。这得益于我们采样了比较多的序列，感兴趣的读者可以尝试修改采样次数，然后观察蒙特卡洛方法的结果。</p>
+</section>
+<section id="最优策略" class="level3" data-number="1.1.4">
+<h3 data-number="1.1.4" class="anchored" data-anchor-id="最优策略"><span class="header-section-number">1.1.4</span> 最优策略</h3>
+<p>强化学习的目标通常是找到一个策略，使得智能体从初始状态出发能获得最多的期望回报。我们首先定义策略之间的偏序关系：当且仅当对于任意状态<span class="math inline">s</span>都有<span class="math inline">V^{\pi}(s)&gt; V^{\pi'}(s)</span>, 记<span class="math inline">\pi&gt;\pi'.</span> 于是在有限状态和动作集合的MDP中至少存在一个策略比其他所有策略都好或者至少存在一个策略不差于其他所有策略，这个策略就是<strong>最优策略</strong>（Optimal policy）。最优策略可能有很多个，我们都将其表示为<span class="math inline">\pi^*(s)</span>.</p>
+<p>最优策略都有相同的状态价值函数，我们称之为最有状态价值函数，表示为： <span class="math display">
+V^*(s)=\max_{\pi} V^{\pi}(s),\forall s\in\mathcal{S}
+</span></p>
+<p>同理我们定义最优动作价值函数： <span class="math display">
+Q^*(s,a)=\max_{\pi}Q^{\pi}(s,a),\forall s\in\mathcal{S},a\in\mathcal{A}
+</span></p>
+<p>为了使<span class="math inline">Q^*(s,a)</span>最大，我们需要在当前状态动作对<span class="math inline">(s,a)</span>之后都执行最优策略，于是我们得到了最有状态价值函数和最优动作价值函数之间的关系：<br>
+<span class="math display">
+Q^\pi{s,a}=r(s,a)+\gamma\sum_{s\in\mathcal{S}}P(s'|s,a)V^*(s')
+</span></p>
+<p>这与在普通策略下的状态价值函数和动作价值函数之间的关系是一样的。另一方面，最优状态价值是选择此时使最优动作价值最大的那一个动作时的状态价值： <span class="math display">
+V^*(s)=\max_{a\in\mathcal{A}}Q^*(s,a)
+</span></p>
+<section id="贝尔曼最优方程" class="level4">
+<h4 class="anchored" data-anchor-id="贝尔曼最优方程">贝尔曼最优方程</h4>
+<p>根据<span class="math inline">V^*(s)</span>和<span class="math inline">Q^*(s,a)</span>的关系，我们可以得到<strong>贝尔曼最优方程</strong>（Bellman optimality equation）：</p>
+<p><span class="math display">
+\begin{aligned}
+V^*(s)&amp;=\max_{a\in\mathcal{A}}\left\{ r(s,a)+\gamma\sum_{s'\in\mathcal{S}}p(s'|s,a)V^*(s')\right\}\\
+Q^*(s,a)=r(s,a)+\gamma\sum_{s'\in \mathcal{S}}p(s'|s,a)\max_{a'\in\mathcal{A}}Q^*(s',a')
+\end{aligned}
+</span></p>
+<p>第@sec-dynpa 章将介绍如何用动态规划算法得到最优策略。</p>
+</section>
+</section>
+<section id="总结" class="level3" data-number="1.1.5">
+<h3 data-number="1.1.5" class="anchored" data-anchor-id="总结"><span class="header-section-number">1.1.5</span> 总结</h3>
+<p>马尔可夫决策过程是强化学习中的基础概念，强化学习中的环境就是一个马尔可夫决策过程。我们接下来将要介绍的强化学习算法通常都是在求解马尔可夫决策过程中的最优策略。</p>
+</section>
+</section>
+<section id="sec-dynpa" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="sec-dynpa"><span class="header-section-number">1.2</span> 动态规划算法</h2>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
