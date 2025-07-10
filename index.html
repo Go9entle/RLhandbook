@@ -209,7 +209,7 @@ window.Quarto = {
       <div>
       <div class="quarto-title-meta-heading">Modified</div>
       <div class="quarto-title-meta-contents">
-        <p class="date-modified">Jul 9, 2025</p>
+        <p class="date-modified">Jul 10, 2025</p>
       </div>
     </div>
       
@@ -250,6 +250,32 @@ window.Quarto = {
   <li><a href="#简介" id="toc-简介" class="nav-link" data-scroll-target="#简介"><span class="header-section-number">3.1</span> 简介</a></li>
   <li><a href="#时序差分方法" id="toc-时序差分方法" class="nav-link" data-scroll-target="#时序差分方法"><span class="header-section-number">3.2</span> 时序差分方法</a></li>
   <li><a href="#sarsa算法" id="toc-sarsa算法" class="nav-link" data-scroll-target="#sarsa算法"><span class="header-section-number">3.3</span> Sarsa算法</a></li>
+  <li><a href="#多步sarsa算法" id="toc-多步sarsa算法" class="nav-link" data-scroll-target="#多步sarsa算法"><span class="header-section-number">3.4</span> 多步Sarsa算法</a></li>
+  <li><a href="#q-learning-算法" id="toc-q-learning-算法" class="nav-link" data-scroll-target="#q-learning-算法"><span class="header-section-number">3.5</span> Q-learning 算法</a>
+  <ul class="collapse">
+  <li><a href="#在线策略与离线策略" id="toc-在线策略与离线策略" class="nav-link" data-scroll-target="#在线策略与离线策略"><span class="header-section-number">3.5.1</span> 在线策略与离线策略</a></li>
+  </ul></li>
+  <li><a href="#小结" id="toc-小结" class="nav-link" data-scroll-target="#小结"><span class="header-section-number">3.6</span> 小结</a></li>
+  </ul></li>
+  <li><a href="#dyna-q-算法" id="toc-dyna-q-算法" class="nav-link" data-scroll-target="#dyna-q-算法"><span class="header-section-number">4</span> Dyna-Q 算法</a>
+  <ul class="collapse">
+  <li><a href="#简介-1" id="toc-简介-1" class="nav-link" data-scroll-target="#简介-1"><span class="header-section-number">4.1</span> 简介</a></li>
+  <li><a href="#dyna-q" id="toc-dyna-q" class="nav-link" data-scroll-target="#dyna-q"><span class="header-section-number">4.2</span> Dyna-Q</a></li>
+  </ul></li>
+  <li><a href="#dqn-算法" id="toc-dqn-算法" class="nav-link" data-scroll-target="#dqn-算法"><span class="header-section-number">5</span> DQN 算法</a>
+  <ul class="collapse">
+  <li><a href="#简介-2" id="toc-简介-2" class="nav-link" data-scroll-target="#简介-2"><span class="header-section-number">5.1</span> 简介</a></li>
+  <li><a href="#dqn" id="toc-dqn" class="nav-link" data-scroll-target="#dqn"><span class="header-section-number">5.2</span> DQN</a></li>
+  </ul></li>
+  <li><a href="#策略梯度算法" id="toc-策略梯度算法" class="nav-link" data-scroll-target="#策略梯度算法"><span class="header-section-number">6</span> 策略梯度算法</a>
+  <ul class="collapse">
+  <li><a href="#简介-3" id="toc-简介-3" class="nav-link" data-scroll-target="#简介-3"><span class="header-section-number">6.1</span> 简介</a></li>
+  <li><a href="#策略梯度" id="toc-策略梯度" class="nav-link" data-scroll-target="#策略梯度"><span class="header-section-number">6.2</span> 策略梯度</a></li>
+  </ul></li>
+  <li><a href="#actor-critic-算法" id="toc-actor-critic-算法" class="nav-link" data-scroll-target="#actor-critic-算法"><span class="header-section-number">7</span> Actor-Critic 算法</a>
+  <ul class="collapse">
+  <li><a href="#简介-4" id="toc-简介-4" class="nav-link" data-scroll-target="#简介-4"><span class="header-section-number">7.1</span> 简介</a></li>
+  <li><a href="#actor-critic" id="toc-actor-critic" class="nav-link" data-scroll-target="#actor-critic"><span class="header-section-number">7.2</span> Actor-Critic</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -301,7 +327,7 @@ V(s)=r(s)+\gamma \sum_{s'\in \mathcal{S}}p(s'\mid s)V(s')
 \end{aligned}
 </span> 其中<span class="math inline">\mathcal{V,R,P}</span>均为向量或矩阵。以上解析解的计算复杂度是<span class="math inline">O(n^3),</span>其中<span class="math inline">n</span>是状态个数，因此这种方法只适用于很小的MRP。求解较大规模的MRP奖励过程中的价值函数时，可以使用<strong>动态规划</strong>、<strong>蒙特卡洛</strong>、<strong>时序差分</strong>，这些方法将在之后的章节介绍。</p>
 <p>接下来编写代码来实现求解价值函数的解析解方法，并据此计算该马尔可夫奖励过程中所有状态的价值。</p>
-<div id="e7a71baf" class="cell" data-execution_count="1">
+<div id="f44e98e1" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> compute(P, rewards, gamma, states_num):</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">''' 利用贝尔曼方程的矩阵形式计算解析解,states_num是MRP的状态数 '''</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    rewards <span class="op">=</span> np.array(rewards).reshape((<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>))  <span class="co">#将rewards写成列向量形式</span></span>
@@ -368,7 +394,7 @@ Q^{\pi}(s,a)&amp;=\mathbb{E}_{\pi}\left[R_t+\gamma Q^{\pi}(S_{t+1},A_{t+1}|S_t=s
 </figure>
 </div>
 <p>接下来我们编写代码来表示 <a href="#fig-mdp" class="quarto-xref">图&nbsp;1</a> 中的MDP，并定义两个策略，第一个策略是一个完全随机策略，即在每个状态下，智能体会以同样的概率选取它可能采取的动作。例如，在<span class="math inline">s_1</span>下智能体会以<span class="math inline">0.5,0.5</span>的概率选取动作”保持<span class="math inline">s_1</span>“和”前往<span class="math inline">s_2</span>“.第二个策略是一个提前设定的策略。</p>
-<div id="50b999ca" class="cell" data-execution_count="2">
+<div id="94f2e4e8" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>S <span class="op">=</span> [<span class="st">"s1"</span>, <span class="st">"s2"</span>, <span class="st">"s3"</span>, <span class="st">"s4"</span>, <span class="st">"s5"</span>]  <span class="co"># 状态集合</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> [<span class="st">"保持s1"</span>, <span class="st">"前往s1"</span>, <span class="st">"前往s2"</span>, <span class="st">"前往s3"</span>, <span class="st">"前往s4"</span>, <span class="st">"前往s5"</span>, <span class="st">"概率前往"</span>]  <span class="co"># 动作集合</span></span>
@@ -436,7 +462,7 @@ P'(s'|s)=\sum_{a\in\mathcal{A}}\pi(a|s)
 </span></p>
 <p>于是，我们构建得到了一个MRP:<span class="math inline">\langle \mathcal{S},P',r',\gamma\rangle</span>.根据价值函数的定义可以发现，转化前的 MDP 的状态价值函数和转化后的 MRP 的价值函数是一样的。于是我们可以用 MRP 中计算价值函数的解析解来计算这个 MDP 中该策略的状态价值函数。</p>
 <p>接下来，我们用代码实现该方法，计算用随即策略<code>Pi_1</code>时的状态价值函数，为了简单起见，我们将直接给出转化后的MRP的状态转移矩阵和奖励函数。</p>
-<div id="f39ad30c" class="cell" data-execution_count="3">
+<div id="b3b9c56b" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>gamma <span class="op">=</span> <span class="fl">0.5</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 转化后的MRP的状态转移矩阵</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>P_from_mdp_to_mrp <span class="op">=</span> [</span>
@@ -464,7 +490,7 @@ P'(s'|s)=\sum_{a\in\mathcal{A}}\pi(a|s)
 <p><span class="math display">
 Q^{\pi}(s,a)=r(s,a)+\gamma\sum_{s'\in\mathcal{S}}P(s'|s,a)V^{\pi}(s')
 </span></p>
-<p>这个 MRP 解析解的方法在状态动作集合比较大的时候不是很适用，那有没有其他的方法呢？<a href="#sec-dynpa" class="quarto-xref">章节&nbsp;2</a> 将介绍用动态规划算法来计算得到价值函数。<a href="#sec-mc" class="quarto-xref">章节&nbsp;1.3</a> 将介绍用蒙特卡洛方法来近似估计这个价值函数，用蒙特卡洛方法的好处在于我们不需要知道 MDP 的状态转移函数和奖励函数，它可以得到一个近似值，并且采样数越多越准确。</p>
+<p>这个 MRP 解析解的方法在状态动作集合比较大的时候不是很适用，那有没有其他的方法呢？ <a href="#sec-dynpa" class="quarto-xref">章节&nbsp;2</a> 将介绍用动态规划算法来计算得到价值函数。 <a href="#sec-mc" class="quarto-xref">章节&nbsp;1.3</a> 将介绍用蒙特卡洛方法来近似估计这个价值函数，用蒙特卡洛方法的好处在于我们不需要知道 MDP 的状态转移函数和奖励函数，它可以得到一个近似值，并且采样数越多越准确。</p>
 </section>
 </section>
 <section id="sec-mc" class="level2" data-number="1.3">
@@ -492,8 +518,8 @@ s_2^{(i)}\overset{a_2^{(i)}}{\rightarrow},...,\overset{a_{T-1}^{(i)}}{\rightarro
 <li><span class="math inline">N(s)\leftarrow N(s)+1</span></li>
 <li><span class="math inline">V(s)\leftarrow V(s)+\frac{G-V(s)}{N(s)}</span></li>
 </ul>
-<p>接下来我们用代码定义一个采样函数，采样函数需要遵守状态转移矩阵和相应策略，每次将<code>(s,a,r,s_next)</code>元组放入序列中，直到到达终止序列。然后我们通过该函数，用随即策略在@fig-mdp 的MDP中随机采样几条序列。</p>
-<div id="74f47ca9" class="cell" data-execution_count="4">
+<p>接下来我们用代码定义一个采样函数，采样函数需要遵守状态转移矩阵和相应策略，每次将<code>(s,a,r,s_next)</code>元组放入序列中，直到到达终止序列。然后我们通过该函数，用随即策略在 <a href="#fig-mdp" class="quarto-xref">图&nbsp;1</a> 的MDP中随机采样几条序列。</p>
+<div id="6aafd3f4" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> sample(MDP, Pi, timestep_max, number):</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">''' 采样函数,策略Pi,限制最长时间步timestep_max,总共采样序列数number '''</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    S, A, P, R, gamma <span class="op">=</span> MDP</span>
@@ -533,14 +559,14 @@ s_2^{(i)}\overset{a_2^{(i)}}{\rightarrow},...,\overset{a_{T-1}^{(i)}}{\rightarro
 <span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'第五条序列</span><span class="ch">\n</span><span class="st">'</span>, episodes[<span class="dv">4</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>第一条序列
- [('s1', '保持s1', -1, 's1'), ('s1', '保持s1', -1, 's1'), ('s1', '保持s1', -1, 's1'), ('s1', '保持s1', -1, 's1'), ('s1', '前往s2', 0, 's2'), ('s2', '前往s3', -2, 's3'), ('s3', '前往s4', -2, 's4'), ('s4', '前往s5', 10, 's5')]
+ [('s1', '前往s2', 0, 's2'), ('s2', '前往s1', -1, 's1'), ('s1', '保持s1', -1, 's1'), ('s1', '前往s2', 0, 's2'), ('s2', '前往s3', -2, 's3'), ('s3', '前往s5', 0, 's5')]
 第二条序列
- [('s2', '前往s1', -1, 's1'), ('s1', '前往s2', 0, 's2'), ('s2', '前往s1', -1, 's1'), ('s1', '前往s2', 0, 's2'), ('s2', '前往s1', -1, 's1'), ('s1', '前往s2', 0, 's2'), ('s2', '前往s1', -1, 's1'), ('s1', '前往s2', 0, 's2'), ('s2', '前往s3', -2, 's3'), ('s3', '前往s5', 0, 's5')]
+ [('s3', '前往s4', -2, 's4'), ('s4', '概率前往', 1, 's3'), ('s3', '前往s5', 0, 's5')]
 第五条序列
- [('s4', '前往s5', 10, 's5')]</code></pre>
+ [('s1', '保持s1', -1, 's1'), ('s1', '保持s1', -1, 's1'), ('s1', '保持s1', -1, 's1'), ('s1', '保持s1', -1, 's1'), ('s1', '前往s2', 0, 's2'), ('s2', '前往s1', -1, 's1'), ('s1', '前往s2', 0, 's2'), ('s2', '前往s3', -2, 's3'), ('s3', '前往s4', -2, 's4'), ('s4', '前往s5', 10, 's5')]</code></pre>
 </div>
 </div>
-<div id="4bc7d050" class="cell" data-execution_count="5">
+<div id="98e460f6" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 对所有采样序列计算所有状态的价值</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> MC(episodes, V, N, gamma):</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> episode <span class="kw">in</span> episodes:</span>
@@ -562,7 +588,7 @@ s_2^{(i)}\overset{a_2^{(i)}}{\rightarrow},...,\overset{a_{T-1}^{(i)}}{\rightarro
 <span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"使用蒙特卡洛方法计算MDP的状态价值为</span><span class="ch">\n</span><span class="st">"</span>, V)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>使用蒙特卡洛方法计算MDP的状态价值为
- {'s1': -1.2275505036753624, 's2': -1.7044112135923994, 's3': 0.46556681493049196, 's4': 5.958254588438255, 's5': 0}</code></pre>
+ {'s1': -1.1920298683502757, 's2': -1.6823415654521157, 's3': 0.5219282166886301, 's4': 6.0421585314201565, 's5': 0}</code></pre>
 </div>
 </div>
 <p>可以看到用蒙特卡洛方法估计得到的状态价值和我们用 MRP 解析解得到的状态价值是很接近的。这得益于我们采样了比较多的序列，感兴趣的读者可以尝试修改采样次数，然后观察蒙特卡洛方法的结果。</p>
@@ -604,7 +630,7 @@ Q^*(s,a)=r(s,a)+\gamma\sum_{s'\in \mathcal{S}}p(s'|s,a)\max_{a'\in\mathcal{A}}Q^
 <h1 data-number="2"><span class="header-section-number">2</span> 动态规划算法</h1>
 <p>动态规划（dynamic programming）是程序设计算法中非常重要的内容，能够高效解决一些经典问题，例如背包问题和最短路径规划。动态规划的基本思想是将待求解问题分解成若干个子问题，先求解子问题，然后从这些子问题的解得到目标问题的解。动态规划会保存已解决的子问题的答案，在求解目标问题的过程中，需要这些子问题答案时就可以直接利用，避免重复计算。本章介绍如何用动态规划的思想来求解在马尔可夫决策过程中的最优策略。</p>
 <p>基于动态规划的强化学习算法主要有两种：一是策略迭代（policy iteration），二是价值迭代（value iteration）。其中，策略迭代由两部分组成：策略评估（policy evaluation）和策略提升（policy improvement）。具体来说，策略迭代中的策略评估使用贝尔曼期望方程来得到一个策略的状态价值函数，这是一个动态规划的过程；而价值迭代直接使用贝尔曼最优方程来进行动态规划，得到最终的最优状态价值。</p>
-<p>不同于@sec-mc 介绍的蒙特卡洛方法和@sec-td 将要介绍的时序差分算法，基于动态规划的这两种强化学习算法要求事先知道环境的状态转移函数和奖励函数，也就是需要知道整个马尔可夫决策过程。在这样一个白盒环境中，不需要通过智能体和环境的大量交互来学习，可以直接用动态规划求解状态价值函数。但是，现实中的白盒环境很少，这也是动态规划算法的局限之处，我们无法将其运用到很多实际场景中。另外，策略迭代和价值迭代通常只适用于有限马尔可夫决策过程，即状态空间和动作空间是离散且有限的。</p>
+<p>不同于 <a href="#sec-mc" class="quarto-xref">章节&nbsp;1.3</a> 介绍的蒙特卡洛方法和 <a href="#sec-td" class="quarto-xref">章节&nbsp;3</a> 将要介绍的时序差分算法，基于动态规划的这两种强化学习算法要求事先知道环境的状态转移函数和奖励函数，也就是需要知道整个马尔可夫决策过程。在这样一个白盒环境中，不需要通过智能体和环境的大量交互来学习，可以直接用动态规划求解状态价值函数。但是，现实中的白盒环境很少，这也是动态规划算法的局限之处，我们无法将其运用到很多实际场景中。另外，策略迭代和价值迭代通常只适用于有限马尔可夫决策过程，即状态空间和动作空间是离散且有限的。</p>
 </section>
 <section id="sec-td" class="level1" data-number="3">
 <h1 data-number="3"><span class="header-section-number">3</span> 时序差分算法</h1>
@@ -648,7 +674,552 @@ Q(s_t,a_t)\leftarrow Q(s_t,a_t)+\alpha\left[ R_t+\gamma Q(s_{t+1},a_{t+1})-Q(s_t
 \frac{\epsilon}{|\mathcal{A}|}&amp; 其他动作
 \end{cases}
 </span></p>
-<p>现在，我们就可以得到一个实际的基于时序差分方法的强化学习算法。这个算法被称为 Sarsa，因为它的动作价值更新用到了当前状态<span class="math inline">s</span>、当前动作<span class="math inline">a</span>、获得的奖励<span class="math inline">r</span>、下一个状态<span class="math inline">s'</span>和下一个动作<span class="math inline">a'</span>,将这些符号拼接后就得到了算法名称，这是一种On-Policy(同策略，<span class="math inline">a_{t+1}</span>和<span class="math inline">a_t</span>来自于同一策略)的时序差分强化学习算法。Sarsa的具体算法如下：</p>
+<p>现在，我们就可以得到一个实际的基于时序差分方法的强化学习算法。这个算法被称为 Sarsa，因为它的动作价值更新用到了当前状态<span class="math inline">s</span>、当前动作<span class="math inline">a</span>、获得的奖励<span class="math inline">r</span>、下一个状态<span class="math inline">s'</span>和下一个动作<span class="math inline">a'</span>,将这些符号拼接后就得到了算法名称，这是一种On-Policy(在线策略，<span class="math inline">a_{t+1}</span>和<span class="math inline">a_t</span>来自于同一策略)的时序差分强化学习算法。</p>
+<p>现在我们在悬崖漫步环境下尝试Sarsa算法。首先给出悬崖漫步环境的代码，此时环境不需要提供奖励函数和状态转移函数，而是需要提供一个和智能体进行交互的函数<code>step()</code>,该函数将智能体的动作作为输入，将奖励和下一个状态输出给智能体。</p>
+<div id="ac10501c" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tqdm <span class="im">import</span> tqdm  <span class="co"># tqdm是显示循环进度条的库</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> CliffWalkingEnv:</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, ncol, nrow):</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.nrow <span class="op">=</span> nrow</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.ncol <span class="op">=</span> ncol</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.x <span class="op">=</span> <span class="dv">0</span>  <span class="co"># 记录当前智能体位置的横坐标</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.y <span class="op">=</span> <span class="va">self</span>.nrow <span class="op">-</span> <span class="dv">1</span>  <span class="co"># 记录当前智能体位置的纵坐标</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> step(<span class="va">self</span>, action):  <span class="co"># 外部调用这个函数来改变当前位置</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 4种动作, change[0]:上, change[1]:下, change[2]:左, change[3]:右。坐标系原点(0,0)</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 定义在左上角</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>        change <span class="op">=</span> [[<span class="dv">0</span>, <span class="op">-</span><span class="dv">1</span>], [<span class="dv">0</span>, <span class="dv">1</span>], [<span class="op">-</span><span class="dv">1</span>, <span class="dv">0</span>], [<span class="dv">1</span>, <span class="dv">0</span>]]</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.x <span class="op">=</span> <span class="bu">min</span>(<span class="va">self</span>.ncol <span class="op">-</span> <span class="dv">1</span>, <span class="bu">max</span>(<span class="dv">0</span>, <span class="va">self</span>.x <span class="op">+</span> change[action][<span class="dv">0</span>]))</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.y <span class="op">=</span> <span class="bu">min</span>(<span class="va">self</span>.nrow <span class="op">-</span> <span class="dv">1</span>, <span class="bu">max</span>(<span class="dv">0</span>, <span class="va">self</span>.y <span class="op">+</span> change[action][<span class="dv">1</span>]))</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>        next_state <span class="op">=</span> <span class="va">self</span>.y <span class="op">*</span> <span class="va">self</span>.ncol <span class="op">+</span> <span class="va">self</span>.x</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>        reward <span class="op">=</span> <span class="op">-</span><span class="dv">1</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>        done <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="va">self</span>.y <span class="op">==</span> <span class="va">self</span>.nrow <span class="op">-</span> <span class="dv">1</span> <span class="kw">and</span> <span class="va">self</span>.x <span class="op">&gt;</span> <span class="dv">0</span>:  <span class="co"># 下一个位置在悬崖或者目标</span></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>            done <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="va">self</span>.x <span class="op">!=</span> <span class="va">self</span>.ncol <span class="op">-</span> <span class="dv">1</span>:</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>                reward <span class="op">=</span> <span class="op">-</span><span class="dv">100</span></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> next_state, reward, done</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> reset(<span class="va">self</span>):  <span class="co"># 回归初始状态,坐标轴原点在左上角</span></span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.x <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.y <span class="op">=</span> <span class="va">self</span>.nrow <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.y <span class="op">*</span> <span class="va">self</span>.ncol <span class="op">+</span> <span class="va">self</span>.x</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>然后我们来实现Sarsa算法，主要维护一个表格<code>Q_table()</code>,用来存储当前策略下所有状态动作对的价值，在用Sarsa算法和环境交互时，用<span class="math inline">\epsilon-</span>贪婪策略进行采样，在更新Sarsa算法时，使用时序差分的公式。我们默认终止状态时所有动作的价值都是<span class="math inline">0</span>,这些价值在初始化为<span class="math inline">0</span>后就不会进行更新。</p>
+<div id="a640936f" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Sarsa:</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">""" Sarsa算法 """</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, ncol, nrow, epsilon, alpha, gamma, n_action<span class="op">=</span><span class="dv">4</span>):</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.Q_table <span class="op">=</span> np.zeros([nrow <span class="op">*</span> ncol, n_action])  <span class="co"># 初始化Q(s,a)表格</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.n_action <span class="op">=</span> n_action  <span class="co"># 动作个数</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.alpha <span class="op">=</span> alpha  <span class="co"># 学习率</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.gamma <span class="op">=</span> gamma  <span class="co"># 折扣因子</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.epsilon <span class="op">=</span> epsilon  <span class="co"># epsilon-贪婪策略中的参数</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> take_action(<span class="va">self</span>, state):  <span class="co"># 选取下一步的操作,具体实现为epsilon-贪婪</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> np.random.random() <span class="op">&lt;</span> <span class="va">self</span>.epsilon:</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>            action <span class="op">=</span> np.random.randint(<span class="va">self</span>.n_action)</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>            action <span class="op">=</span> np.argmax(<span class="va">self</span>.Q_table[state])</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> action</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> best_action(<span class="va">self</span>, state):  <span class="co"># 用于打印策略</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>        Q_max <span class="op">=</span> np.<span class="bu">max</span>(<span class="va">self</span>.Q_table[state])</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>        a <span class="op">=</span> [<span class="dv">0</span> <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.n_action)]</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.n_action):  <span class="co"># 若两个动作的价值一样,都会记录下来</span></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="va">self</span>.Q_table[state, i] <span class="op">==</span> Q_max:</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>                a[i] <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> a</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> update(<span class="va">self</span>, s0, a0, r, s1, a1):</span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>        td_error <span class="op">=</span> r <span class="op">+</span> <span class="va">self</span>.gamma <span class="op">*</span> <span class="va">self</span>.Q_table[s1, a1] <span class="op">-</span> <span class="va">self</span>.Q_table[s0, a0]</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.Q_table[s0, a0] <span class="op">+=</span> <span class="va">self</span>.alpha <span class="op">*</span> td_error</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>接下来我们就在悬崖漫步环境中运行Sarsa算法，一起来看看结果吧！</p>
+<div id="5df7c017" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>ncol <span class="op">=</span> <span class="dv">12</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>nrow <span class="op">=</span> <span class="dv">4</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>env <span class="op">=</span> CliffWalkingEnv(ncol, nrow)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">0</span>)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>epsilon <span class="op">=</span> <span class="fl">0.1</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>alpha <span class="op">=</span> <span class="fl">0.1</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>gamma <span class="op">=</span> <span class="fl">0.9</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>agent <span class="op">=</span> Sarsa(ncol, nrow, epsilon, alpha, gamma)</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>num_episodes <span class="op">=</span> <span class="dv">500</span>  <span class="co"># 智能体在环境中运行的序列的数量</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>return_list <span class="op">=</span> []  <span class="co"># 记录每一条序列的回报</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">10</span>):  <span class="co"># 显示10个进度条</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># tqdm的进度条功能</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tqdm(total<span class="op">=</span><span class="bu">int</span>(num_episodes <span class="op">/</span> <span class="dv">10</span>), desc<span class="op">=</span><span class="st">'Iteration </span><span class="sc">%d</span><span class="st">'</span> <span class="op">%</span> i) <span class="im">as</span> pbar:</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i_episode <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">int</span>(num_episodes <span class="op">/</span> <span class="dv">10</span>)):  <span class="co"># 每个进度条的序列数</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>            episode_return <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>            state <span class="op">=</span> env.reset()</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>            action <span class="op">=</span> agent.take_action(state)</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>            done <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>            <span class="cf">while</span> <span class="kw">not</span> done:</span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>                next_state, reward, done <span class="op">=</span> env.step(action)</span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>                next_action <span class="op">=</span> agent.take_action(next_state)</span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>                episode_return <span class="op">+=</span> reward  <span class="co"># 这里回报的计算不进行折扣因子衰减</span></span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>                agent.update(state, action, reward, next_state, next_action)</span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>                state <span class="op">=</span> next_state</span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>                action <span class="op">=</span> next_action</span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>            return_list.append(episode_return)</span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> (i_episode <span class="op">+</span> <span class="dv">1</span>) <span class="op">%</span> <span class="dv">10</span> <span class="op">==</span> <span class="dv">0</span>:  <span class="co"># 每10条序列打印一下这10条序列的平均回报</span></span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a>                pbar.set_postfix({</span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a>                    <span class="st">'episode'</span>:</span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a>                    <span class="st">'</span><span class="sc">%d</span><span class="st">'</span> <span class="op">%</span> (num_episodes <span class="op">/</span> <span class="dv">10</span> <span class="op">*</span> i <span class="op">+</span> i_episode <span class="op">+</span> <span class="dv">1</span>),</span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a>                    <span class="st">'return'</span>:</span>
+<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a>                    <span class="st">'</span><span class="sc">%.3f</span><span class="st">'</span> <span class="op">%</span> np.mean(return_list[<span class="op">-</span><span class="dv">10</span>:])</span>
+<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a>                })</span>
+<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a>            pbar.update(<span class="dv">1</span>)</span>
+<span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-37"><a href="#cb11-37" aria-hidden="true" tabindex="-1"></a>episodes_list <span class="op">=</span> <span class="bu">list</span>(<span class="bu">range</span>(<span class="bu">len</span>(return_list)))</span>
+<span id="cb11-38"><a href="#cb11-38" aria-hidden="true" tabindex="-1"></a>plt.plot(episodes_list, return_list)</span>
+<span id="cb11-39"><a href="#cb11-39" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Episodes'</span>)</span>
+<span id="cb11-40"><a href="#cb11-40" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Returns'</span>)</span>
+<span id="cb11-41"><a href="#cb11-41" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Sarsa on </span><span class="sc">{}</span><span class="st">'</span>.<span class="bu">format</span>(<span class="st">'Cliff Walking'</span>))</span>
+<span id="cb11-42"><a href="#cb11-42" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-9-output-1.png" width="604" height="449" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>我们发现，随着训练的进行，Sarsa 算法获得的回报越来越高。在进行 500 条序列的学习后，可以获得 −20 左右的回报，此时已经非常接近最优策略了。然后我们看一下 Sarsa 算法得到的策略在各个状态下会使智能体采取什么样的动作。</p>
+<div id="b28c14de" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> print_agent(agent, env, action_meaning, disaster<span class="op">=</span>[], end<span class="op">=</span>[]):</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(env.nrow):</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(env.ncol):</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> (i <span class="op">*</span> env.ncol <span class="op">+</span> j) <span class="kw">in</span> disaster:</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="st">'****'</span>, end<span class="op">=</span><span class="st">' '</span>)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>            <span class="cf">elif</span> (i <span class="op">*</span> env.ncol <span class="op">+</span> j) <span class="kw">in</span> end:</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="st">'EEEE'</span>, end<span class="op">=</span><span class="st">' '</span>)</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>            <span class="cf">else</span>:</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>                a <span class="op">=</span> agent.best_action(i <span class="op">*</span> env.ncol <span class="op">+</span> j)</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>                pi_str <span class="op">=</span> <span class="st">''</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>                <span class="cf">for</span> k <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(action_meaning)):</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>                    pi_str <span class="op">+=</span> action_meaning[k] <span class="cf">if</span> a[k] <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">else</span> <span class="st">'o'</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(pi_str, end<span class="op">=</span><span class="st">' '</span>)</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>()</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>action_meaning <span class="op">=</span> [<span class="st">'^'</span>, <span class="st">'v'</span>, <span class="st">'&lt;'</span>, <span class="st">'&gt;'</span>]</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Sarsa算法最终收敛得到的策略为：'</span>)</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>print_agent(agent, env, action_meaning, <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">37</span>, <span class="dv">47</span>)), [<span class="dv">47</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Sarsa算法最终收敛得到的策略为：
+ooo&gt; ooo&gt; ooo&gt; ooo&gt; ooo&gt; ooo&gt; ooo&gt; ooo&gt; ooo&gt; ooo&gt; ooo&gt; ovoo 
+ooo&gt; ooo&gt; ooo&gt; ooo&gt; ooo&gt; ooo&gt; ooo&gt; ooo&gt; ooo&gt; ooo&gt; ooo&gt; ovoo 
+^ooo ooo&gt; ^ooo ooo&gt; ooo&gt; ooo&gt; ooo&gt; ^ooo ^ooo ooo&gt; ooo&gt; ovoo 
+^ooo **** **** **** **** **** **** **** **** **** **** EEEE </code></pre>
+</div>
+</div>
+<p>可以发现Sarsa算法会采取比较远离悬崖的策略来抵达目标，比较保守。</p>
+</section>
+<section id="多步sarsa算法" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="多步sarsa算法"><span class="header-section-number">3.4</span> 多步Sarsa算法</h2>
+<p>蒙特卡洛方法利用当前状态之后每一步的奖励而不使用任何价值估计，时序差分算法只利用一步奖励和下一个状态的价值估计。那它们之间的区别是什么呢？总的来说，蒙特卡洛方法是无偏（unbiased）的，但是具有比较大的方差，因为每一步的状态转移都有不确定性，而每一步状态采取的动作所得到的不一样的奖励最终都会加起来，这会极大影响最终的价值估计；时序差分算法具有非常小的方差，因为只关注了一步状态转移，用到了一步的奖励，但是它是有偏的，因为用到了下一个状态的价值估计而不是其真实的价值。那有没有什么方法可以结合二者的优势呢？答案是多步时序差分！多步时序差分的意思是使用<span class="math inline">n</span>步的奖励，然后使用之后状态的价值估计。用公式表示，将 <span class="math display">
+G_t=R_t+\gamma Q(s_{t+1},a_{t+1})
+</span> 替换成 <span class="math display">
+G_t=R_t+\gamma R_{t+1}+\dots+\gamma^{n-1}R_{t+n-1}+\gamma^n Q(s_{t+n},a_{t+n})
+</span> 于是Sarsa算法中的动作价值函数更新公式变为 <span class="math display">
+Q(s_t,a_t)\leftarrow Q(s_t,a_t)+\alpha\left[ R_t+\gamma R_{t+1}+\dots+\gamma^{n-1}R_{t+n-1}+\gamma^n Q(s_{t+n},a_{t+n})-Q(s_t,a_t) \right]
+</span> 接下来将用代码实现<span class="math inline">n</span>步Sarsa算法，在Sarsa代码基础上进行修改，引入多步时序差分计算。</p>
+<div id="c3a6a8db" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> nstep_Sarsa:</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">""" n步Sarsa算法 """</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, n, ncol, nrow, epsilon, alpha, gamma, n_action<span class="op">=</span><span class="dv">4</span>):</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.Q_table <span class="op">=</span> np.zeros([nrow <span class="op">*</span> ncol, n_action])</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.n_action <span class="op">=</span> n_action</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.alpha <span class="op">=</span> alpha</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.gamma <span class="op">=</span> gamma</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.epsilon <span class="op">=</span> epsilon</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.n <span class="op">=</span> n  <span class="co"># 采用n步Sarsa算法</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.state_list <span class="op">=</span> []  <span class="co"># 保存之前的状态</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.action_list <span class="op">=</span> []  <span class="co"># 保存之前的动作</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.reward_list <span class="op">=</span> []  <span class="co"># 保存之前的奖励</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> take_action(<span class="va">self</span>, state):</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> np.random.random() <span class="op">&lt;</span> <span class="va">self</span>.epsilon:</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>            action <span class="op">=</span> np.random.randint(<span class="va">self</span>.n_action)</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>            action <span class="op">=</span> np.argmax(<span class="va">self</span>.Q_table[state])</span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> action</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> best_action(<span class="va">self</span>, state):  <span class="co"># 用于打印策略</span></span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>        Q_max <span class="op">=</span> np.<span class="bu">max</span>(<span class="va">self</span>.Q_table[state])</span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>        a <span class="op">=</span> [<span class="dv">0</span> <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.n_action)]</span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.n_action):</span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="va">self</span>.Q_table[state, i] <span class="op">==</span> Q_max:</span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>                a[i] <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> a</span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> update(<span class="va">self</span>, s0, a0, r, s1, a1, done):</span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.state_list.append(s0)</span>
+<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.action_list.append(a0)</span>
+<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.reward_list.append(r)</span>
+<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="bu">len</span>(<span class="va">self</span>.state_list) <span class="op">==</span> <span class="va">self</span>.n:  <span class="co"># 若保存的数据可以进行n步更新</span></span>
+<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a>            G <span class="op">=</span> <span class="va">self</span>.Q_table[s1, a1]  <span class="co"># 得到Q(s_{t+n}, a_{t+n})</span></span>
+<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">reversed</span>(<span class="bu">range</span>(<span class="va">self</span>.n)):</span>
+<span id="cb14-36"><a href="#cb14-36" aria-hidden="true" tabindex="-1"></a>                G <span class="op">=</span> <span class="va">self</span>.gamma <span class="op">*</span> G <span class="op">+</span> <span class="va">self</span>.reward_list[i]  <span class="co"># 不断向前计算每一步的回报</span></span>
+<span id="cb14-37"><a href="#cb14-37" aria-hidden="true" tabindex="-1"></a>                <span class="co"># 如果到达终止状态,最后几步虽然长度不够n步,也将其进行更新</span></span>
+<span id="cb14-38"><a href="#cb14-38" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> done <span class="kw">and</span> i <span class="op">&gt;</span> <span class="dv">0</span>:</span>
+<span id="cb14-39"><a href="#cb14-39" aria-hidden="true" tabindex="-1"></a>                    s <span class="op">=</span> <span class="va">self</span>.state_list[i]</span>
+<span id="cb14-40"><a href="#cb14-40" aria-hidden="true" tabindex="-1"></a>                    a <span class="op">=</span> <span class="va">self</span>.action_list[i]</span>
+<span id="cb14-41"><a href="#cb14-41" aria-hidden="true" tabindex="-1"></a>                    <span class="va">self</span>.Q_table[s, a] <span class="op">+=</span> <span class="va">self</span>.alpha <span class="op">*</span> (G <span class="op">-</span> <span class="va">self</span>.Q_table[s, a])</span>
+<span id="cb14-42"><a href="#cb14-42" aria-hidden="true" tabindex="-1"></a>            s <span class="op">=</span> <span class="va">self</span>.state_list.pop(<span class="dv">0</span>)  <span class="co"># 将需要更新的状态动作从列表中删除,下次不必更新</span></span>
+<span id="cb14-43"><a href="#cb14-43" aria-hidden="true" tabindex="-1"></a>            a <span class="op">=</span> <span class="va">self</span>.action_list.pop(<span class="dv">0</span>)</span>
+<span id="cb14-44"><a href="#cb14-44" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.reward_list.pop(<span class="dv">0</span>)</span>
+<span id="cb14-45"><a href="#cb14-45" aria-hidden="true" tabindex="-1"></a>            <span class="co"># n步Sarsa的主要更新步骤</span></span>
+<span id="cb14-46"><a href="#cb14-46" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.Q_table[s, a] <span class="op">+=</span> <span class="va">self</span>.alpha <span class="op">*</span> (G <span class="op">-</span> <span class="va">self</span>.Q_table[s, a])</span>
+<span id="cb14-47"><a href="#cb14-47" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> done:  <span class="co"># 如果到达终止状态,即将开始下一条序列,则将列表全清空</span></span>
+<span id="cb14-48"><a href="#cb14-48" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.state_list <span class="op">=</span> []</span>
+<span id="cb14-49"><a href="#cb14-49" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.action_list <span class="op">=</span> []</span>
+<span id="cb14-50"><a href="#cb14-50" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.reward_list <span class="op">=</span> []</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="f3d4d7f9" class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">0</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>n_step <span class="op">=</span> <span class="dv">5</span>  <span class="co"># 5步Sarsa算法</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>alpha <span class="op">=</span> <span class="fl">0.1</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>epsilon <span class="op">=</span> <span class="fl">0.1</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>gamma <span class="op">=</span> <span class="fl">0.9</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>agent <span class="op">=</span> nstep_Sarsa(n_step, ncol, nrow, epsilon, alpha, gamma)</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>num_episodes <span class="op">=</span> <span class="dv">500</span>  <span class="co"># 智能体在环境中运行的序列的数量</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>return_list <span class="op">=</span> []  <span class="co"># 记录每一条序列的回报</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">10</span>):  <span class="co"># 显示10个进度条</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>    <span class="co">#tqdm的进度条功能</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tqdm(total<span class="op">=</span><span class="bu">int</span>(num_episodes <span class="op">/</span> <span class="dv">10</span>), desc<span class="op">=</span><span class="st">'Iteration </span><span class="sc">%d</span><span class="st">'</span> <span class="op">%</span> i) <span class="im">as</span> pbar:</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i_episode <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">int</span>(num_episodes <span class="op">/</span> <span class="dv">10</span>)):  <span class="co"># 每个进度条的序列数</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>            episode_return <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>            state <span class="op">=</span> env.reset()</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>            action <span class="op">=</span> agent.take_action(state)</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>            done <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>            <span class="cf">while</span> <span class="kw">not</span> done:</span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>                next_state, reward, done <span class="op">=</span> env.step(action)</span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>                next_action <span class="op">=</span> agent.take_action(next_state)</span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>                episode_return <span class="op">+=</span> reward  <span class="co"># 这里回报的计算不进行折扣因子衰减</span></span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>                agent.update(state, action, reward, next_state, next_action,</span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>                             done)</span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>                state <span class="op">=</span> next_state</span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>                action <span class="op">=</span> next_action</span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>            return_list.append(episode_return)</span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> (i_episode <span class="op">+</span> <span class="dv">1</span>) <span class="op">%</span> <span class="dv">10</span> <span class="op">==</span> <span class="dv">0</span>:  <span class="co"># 每10条序列打印一下这10条序列的平均回报</span></span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a>                pbar.set_postfix({</span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a>                    <span class="st">'episode'</span>:</span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a>                    <span class="st">'</span><span class="sc">%d</span><span class="st">'</span> <span class="op">%</span> (num_episodes <span class="op">/</span> <span class="dv">10</span> <span class="op">*</span> i <span class="op">+</span> i_episode <span class="op">+</span> <span class="dv">1</span>),</span>
+<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a>                    <span class="st">'return'</span>:</span>
+<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a>                    <span class="st">'</span><span class="sc">%.3f</span><span class="st">'</span> <span class="op">%</span> np.mean(return_list[<span class="op">-</span><span class="dv">10</span>:])</span>
+<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a>                })</span>
+<span id="cb15-34"><a href="#cb15-34" aria-hidden="true" tabindex="-1"></a>            pbar.update(<span class="dv">1</span>)</span>
+<span id="cb15-35"><a href="#cb15-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-36"><a href="#cb15-36" aria-hidden="true" tabindex="-1"></a>episodes_list <span class="op">=</span> <span class="bu">list</span>(<span class="bu">range</span>(<span class="bu">len</span>(return_list)))</span>
+<span id="cb15-37"><a href="#cb15-37" aria-hidden="true" tabindex="-1"></a>plt.plot(episodes_list, return_list)</span>
+<span id="cb15-38"><a href="#cb15-38" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Episodes'</span>)</span>
+<span id="cb15-39"><a href="#cb15-39" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Returns'</span>)</span>
+<span id="cb15-40"><a href="#cb15-40" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'5-step Sarsa on </span><span class="sc">{}</span><span class="st">'</span>.<span class="bu">format</span>(<span class="st">'Cliff Walking'</span>))</span>
+<span id="cb15-41"><a href="#cb15-41" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-12-output-1.png" width="604" height="449" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>通过实验结果可以发现，<span class="math inline">5</span>步Sarsa算法的收敛速度比单步Sarsa算法更快，我们看下此时的策略表现。</p>
+<div id="0ba97e34" class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>action_meaning <span class="op">=</span> [<span class="st">'^'</span>, <span class="st">'v'</span>, <span class="st">'&lt;'</span>, <span class="st">'&gt;'</span>]</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'5步Sarsa算法最终收敛得到的策略为：'</span>)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>print_agent(agent, env, action_meaning, <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">37</span>, <span class="dv">47</span>)), [<span class="dv">47</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>5步Sarsa算法最终收敛得到的策略为：
+ooo&gt; ooo&gt; ooo&gt; ooo&gt; ooo&gt; ooo&gt; ooo&gt; ooo&gt; ooo&gt; ooo&gt; ooo&gt; ovoo 
+^ooo ^ooo ^ooo oo&lt;o ^ooo ^ooo ^ooo ^ooo ooo&gt; ooo&gt; ^ooo ovoo 
+ooo&gt; ^ooo ^ooo ^ooo ^ooo ^ooo ^ooo ooo&gt; ooo&gt; ^ooo ooo&gt; ovoo 
+^ooo **** **** **** **** **** **** **** **** **** **** EEEE </code></pre>
+</div>
+</div>
+<p>我们发现此时多步 Sarsa 算法得到的策略会在最远离悬崖的一边行走，以保证最大的安全性。</p>
+</section>
+<section id="q-learning-算法" class="level2" data-number="3.5">
+<h2 data-number="3.5" class="anchored" data-anchor-id="q-learning-算法"><span class="header-section-number">3.5</span> Q-learning 算法</h2>
+<p>除了 Sarsa，还有一种非常著名的基于时序差分算法的强化学习算法——Q-learning。Q-learning 和 Sarsa 的最大区别在于 Q-learning 的时序差分更新方式为</p>
+<p><span class="math display">
+Q(s_t,a_t)\leftarrow Q(s_t,a_t)+\alpha\left[ R_t+\gamma \max_{a}Q(s_{t+1},a)-Q(s_t,a_t) \right]
+</span></p>
+<p>我们可以用价值迭代的思想来理解Q-learning, 即Q-learning 是直接在估计<span class="math inline">Q^*,</span>因为动作价值函数的贝尔曼最优方程是 <span class="math display">
+Q^*(s,a)=r(s,a)+\gamma \sum_{s'\in\mathcal{S}}P(s'|s,a)\max_{a'}Q^*(s',a')
+</span> 而 Sarsa估计当前<span class="math inline">\epsilon-</span>贪婪策略的动作价值函数。需要强调的是，Q-learning的更新并非必须使用当前贪心策略<span class="math inline">\arg\max_{a}Q(s,a)</span>采样得到的数据，因为给定任意<span class="math inline">(s,a,r,s')</span>都可以直接根据更新公式来更新<span class="math inline">Q</span>,为了探索，我们通常使用一个<span class="math inline">\epsilon-</span>贪婪策略采样得到的数据，因为它的更新中用到的<span class="math inline">Q(s',a')</span>的<span class="math inline">a'</span>是当前策略在<span class="math inline">s'</span>下的动作。我们称Sarsa是<strong>在线策略</strong>（On-policy）算法，称Q-learning是<strong>离线策略</strong>（Off-policy）算法，这两个概念在强化学习中非常重要。</p>
+<section id="在线策略与离线策略" class="level3" data-number="3.5.1">
+<h3 data-number="3.5.1" class="anchored" data-anchor-id="在线策略与离线策略"><span class="header-section-number">3.5.1</span> 在线策略与离线策略</h3>
+<p>我们称采样数据的策略为行为策略（behavior policy），称用这些数据来更新的策略为目标策略（target policy）。在线策略（on-policy）算法表示行为策略和目标策略是同一个策略；而离线策略（off-policy）算法表示行为策略和目标策略不是同一个策略。Sarsa 是典型的在线策略算法，而 Q-learning 是典型的离线策略算法。判断二者类别的一个重要手段是看计算时序差分的价值目标的数据是否来自当前的策略，如 <a href="#fig-onandoff" class="quarto-xref">图&nbsp;2</a> 所示。具体而言：<br>
+- 对于Sarsa，它的更新公式必须使用来自当前策略采样得到的五元组<span class="math inline">(s,a,r,s',a')</span>,因此它是在线策略学习方法； - 对于Q-learning，它的更新公式使用的是四元组<span class="math inline">(s,a,r,s')</span>来更新当前状态动作对的价值<span class="math inline">Q(s,a)</span>,数据中的<span class="math inline">s,a</span>是给定的条件，<span class="math inline">r,s'</span>皆由环境采样得到，该四元组并不需要一定是当前策略采样得到的数据，也可以来自行为策略，因此它是离线策略算法。</p>
+<div id="fig-onandoff" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-onandoff-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://hrl.boyuai.com/static/400.78f393db.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-onandoff-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;2： Sarsa和Q-learning的对比
+</figcaption>
+</figure>
+</div>
+<p>在之后的讲解中，我们会注明各个算法分别属于这两类中的哪一类。如前文所述，离线策略算法能够重复使用过往训练样本，往往具有更小的样本复杂度，也因此更受欢迎。</p>
+<p>我们接下来仍然在悬崖漫步环境下来实现 Q-learning 算法。</p>
+<div id="0933a67e" class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> QLearning:</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">""" Q-learning算法 """</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, ncol, nrow, epsilon, alpha, gamma, n_action<span class="op">=</span><span class="dv">4</span>):</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.Q_table <span class="op">=</span> np.zeros([nrow <span class="op">*</span> ncol, n_action])  <span class="co"># 初始化Q(s,a)表格</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.n_action <span class="op">=</span> n_action  <span class="co"># 动作个数</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.alpha <span class="op">=</span> alpha  <span class="co"># 学习率</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.gamma <span class="op">=</span> gamma  <span class="co"># 折扣因子</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.epsilon <span class="op">=</span> epsilon  <span class="co"># epsilon-贪婪策略中的参数</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> take_action(<span class="va">self</span>, state):  <span class="co">#选取下一步的操作</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> np.random.random() <span class="op">&lt;</span> <span class="va">self</span>.epsilon:</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>            action <span class="op">=</span> np.random.randint(<span class="va">self</span>.n_action)</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>            action <span class="op">=</span> np.argmax(<span class="va">self</span>.Q_table[state])</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> action</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> best_action(<span class="va">self</span>, state):  <span class="co"># 用于打印策略</span></span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>        Q_max <span class="op">=</span> np.<span class="bu">max</span>(<span class="va">self</span>.Q_table[state])</span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>        a <span class="op">=</span> [<span class="dv">0</span> <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.n_action)]</span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.n_action):</span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="va">self</span>.Q_table[state, i] <span class="op">==</span> Q_max:</span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>                a[i] <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> a</span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> update(<span class="va">self</span>, s0, a0, r, s1):</span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a>        td_error <span class="op">=</span> r <span class="op">+</span> <span class="va">self</span>.gamma <span class="op">*</span> <span class="va">self</span>.Q_table[s1].<span class="bu">max</span>(</span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>        ) <span class="op">-</span> <span class="va">self</span>.Q_table[s0, a0]</span>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.Q_table[s0, a0] <span class="op">+=</span> <span class="va">self</span>.alpha <span class="op">*</span> td_error</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="41d9ae55" class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">0</span>)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>epsilon <span class="op">=</span> <span class="fl">0.1</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>alpha <span class="op">=</span> <span class="fl">0.1</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>gamma <span class="op">=</span> <span class="fl">0.9</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>agent <span class="op">=</span> QLearning(ncol, nrow, epsilon, alpha, gamma)</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>num_episodes <span class="op">=</span> <span class="dv">500</span>  <span class="co"># 智能体在环境中运行的序列的数量</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>return_list <span class="op">=</span> []  <span class="co"># 记录每一条序列的回报</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">10</span>):  <span class="co"># 显示10个进度条</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># tqdm的进度条功能</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> tqdm(total<span class="op">=</span><span class="bu">int</span>(num_episodes <span class="op">/</span> <span class="dv">10</span>), desc<span class="op">=</span><span class="st">'Iteration </span><span class="sc">%d</span><span class="st">'</span> <span class="op">%</span> i) <span class="im">as</span> pbar:</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i_episode <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">int</span>(num_episodes <span class="op">/</span> <span class="dv">10</span>)):  <span class="co"># 每个进度条的序列数</span></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>            episode_return <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>            state <span class="op">=</span> env.reset()</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>            done <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>            <span class="cf">while</span> <span class="kw">not</span> done:</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>                action <span class="op">=</span> agent.take_action(state)</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>                next_state, reward, done <span class="op">=</span> env.step(action)</span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>                episode_return <span class="op">+=</span> reward  <span class="co"># 这里回报的计算不进行折扣因子衰减</span></span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>                agent.update(state, action, reward, next_state)</span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>                state <span class="op">=</span> next_state</span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>            return_list.append(episode_return)</span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> (i_episode <span class="op">+</span> <span class="dv">1</span>) <span class="op">%</span> <span class="dv">10</span> <span class="op">==</span> <span class="dv">0</span>:  <span class="co"># 每10条序列打印一下这10条序列的平均回报</span></span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>                pbar.set_postfix({</span>
+<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a>                    <span class="st">'episode'</span>:</span>
+<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a>                    <span class="st">'</span><span class="sc">%d</span><span class="st">'</span> <span class="op">%</span> (num_episodes <span class="op">/</span> <span class="dv">10</span> <span class="op">*</span> i <span class="op">+</span> i_episode <span class="op">+</span> <span class="dv">1</span>),</span>
+<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a>                    <span class="st">'return'</span>:</span>
+<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a>                    <span class="st">'</span><span class="sc">%.3f</span><span class="st">'</span> <span class="op">%</span> np.mean(return_list[<span class="op">-</span><span class="dv">10</span>:])</span>
+<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a>                })</span>
+<span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a>            pbar.update(<span class="dv">1</span>)</span>
+<span id="cb19-31"><a href="#cb19-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-32"><a href="#cb19-32" aria-hidden="true" tabindex="-1"></a>episodes_list <span class="op">=</span> <span class="bu">list</span>(<span class="bu">range</span>(<span class="bu">len</span>(return_list)))</span>
+<span id="cb19-33"><a href="#cb19-33" aria-hidden="true" tabindex="-1"></a>plt.plot(episodes_list, return_list)</span>
+<span id="cb19-34"><a href="#cb19-34" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Episodes'</span>)</span>
+<span id="cb19-35"><a href="#cb19-35" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Returns'</span>)</span>
+<span id="cb19-36"><a href="#cb19-36" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Q-learning on </span><span class="sc">{}</span><span class="st">'</span>.<span class="bu">format</span>(<span class="st">'Cliff Walking'</span>))</span>
+<span id="cb19-37"><a href="#cb19-37" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb19-38"><a href="#cb19-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-39"><a href="#cb19-39" aria-hidden="true" tabindex="-1"></a>action_meaning <span class="op">=</span> [<span class="st">'^'</span>, <span class="st">'v'</span>, <span class="st">'&lt;'</span>, <span class="st">'&gt;'</span>]</span>
+<span id="cb19-40"><a href="#cb19-40" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Q-learning算法最终收敛得到的策略为：'</span>)</span>
+<span id="cb19-41"><a href="#cb19-41" aria-hidden="true" tabindex="-1"></a>print_agent(agent, env, action_meaning, <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">37</span>, <span class="dv">47</span>)), [<span class="dv">47</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-15-output-1.png" width="604" height="449" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Q-learning算法最终收敛得到的策略为：
+^ooo ovoo ovoo ^ooo ^ooo ovoo ooo&gt; ^ooo ^ooo ooo&gt; ooo&gt; ovoo 
+ooo&gt; ooo&gt; ooo&gt; ooo&gt; ooo&gt; ooo&gt; ^ooo ooo&gt; ooo&gt; ooo&gt; ooo&gt; ovoo 
+ooo&gt; ooo&gt; ooo&gt; ooo&gt; ooo&gt; ooo&gt; ooo&gt; ooo&gt; ooo&gt; ooo&gt; ooo&gt; ovoo 
+^ooo **** **** **** **** **** **** **** **** **** **** EEEE </code></pre>
+</div>
+</div>
+<p>需要注意的是，打印出来的回报是行为策略在环境中交互得到的，而不是 Q-learning 算法在学习的目标策略的真实回报。我们把目标策略的行为打印出来后，发现其更偏向于走在悬崖边上，这与 Sarsa 算法得到的比较保守的策略相比是更优的。 但是仔细观察 Sarsa 和 Q-learning 在训练过程中的回报曲线图，我们可以发现，在一个序列中 Sarsa 获得的期望回报是高于 Q-learning 的。这是因为在训练过程中智能体采取基于当前<span class="math inline">Q(s,a)</span>函数的<span class="math inline">\epsilon</span>-贪婪策略来平衡探索与利用，Q-learning 算法由于沿着悬崖边走，会以一定概率探索“掉入悬崖”这一动作，而 Sarsa 相对保守的路线使智能体几乎不可能掉入悬崖。</p>
+</section>
+</section>
+<section id="小结" class="level2" data-number="3.6">
+<h2 data-number="3.6" class="anchored" data-anchor-id="小结"><span class="header-section-number">3.6</span> 小结</h2>
+<p>本章介绍了无模型的强化学习中的一种非常重要的算法——时序差分算法。时序差分算法的核心思想是用对未来动作选择的价值估计来更新对当前动作选择的价值估计，这是强化学习中的核心思想之一。本章重点讨论了 Sarsa 和 Q-learning 这两个最具有代表性的时序差分算法。当环境是有限状态集合和有限动作集合时，这两个算法非常好用，可以根据任务是否允许在线策略学习来决定使用哪一个算法。 值得注意的是，尽管离线策略学习可以让智能体基于经验回放池中的样本来学习，但需要保证智能体在学习的过程中可以不断和环境进行交互，将采样得到的最新的经验样本加入经验回放池中，从而使经验回放池中有一定数量的样本和当前智能体策略对应的数据分布保持很近的距离。如果不允许智能体在学习过程中和环境进行持续交互，而是完全基于一个给定的样本集来直接训练一个策略，这样的学习范式被称为离线强化学习（offline reinforcement learning），之后的章节将会介绍离线强化学习的相关知识。</p>
+</section>
+</section>
+<section id="dyna-q-算法" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Dyna-Q 算法</h1>
+<section id="简介-1" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="简介-1"><span class="header-section-number">4.1</span> 简介</h2>
+<p>在强化学习中，“模型”通常指与智能体交互的环境模型，即对环境的状态转移概率和奖励函数进行建模。根据是否具有环境模型，强化学习算法分为两种：<strong>基于模型的强化学习</strong>（model-based reinforcement learning）和<strong>无模型的强化学习</strong>（model-free reinforcement learning）。无模型的强化学习根据智能体与环境交互采样到的数据直接进行策略提升或者价值估计，<a href="#sec-td" class="quarto-xref">章节&nbsp;3</a> 讨论的两种时序差分算法，即 Sarsa 和 Q-learning 算法，便是两种无模型的强化学习方法，本书在后续章节中将要介绍的方法也大多是无模型的强化学习算法。在基于模型的强化学习中，模型可以是事先知道的，也可以是根据智能体与环境交互采样到的数据学习得到的，然后用这个模型帮助策略提升或者价值估计。<a href="#sec-dynpa" class="quarto-xref">章节&nbsp;2</a> 讨论的两种动态规划算法，即策略迭代和价值迭代，则是基于模型的强化学习方法，在这两种算法中环境模型是事先已知的。本章即将介绍的 Dyna-Q 算法也是非常基础的基于模型的强化学习算法，不过它的环境模型是通过采样数据估计得到的。</p>
+<p>强化学习算法有两个重要的评价指标：一个是算法收敛后的策略在初始状态下的期望回报，另一个是样本复杂度，即算法达到收敛结果需要在真实环境中采样的样本数量。基于模型的强化学习算法由于具有一个环境模型，智能体可以额外和环境模型进行交互，对真实环境中样本的需求量往往就会减少，因此通常会比无模型的强化学习算法具有更低的样本复杂度。但是，环境模型可能并不准确，不能完全代替真实环境，因此基于模型的强化学习算法收敛后其策略的期望回报可能不如无模型的强化学习算法。</p>
+</section>
+<section id="dyna-q" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="dyna-q"><span class="header-section-number">4.2</span> Dyna-Q</h2>
+<p>Dyna-Q算法是一个经典的基于模型的强化学习算法，如 <a href="#fig-youwumoxing" class="quarto-xref">图&nbsp;3</a> 所示，Dyna-Q使用一种叫做Q-planning 的方法来基于模型生成一些模拟数据，然后用模拟数据和真实数据一起改进策略。Q-planning 每次选取一个曾经访问过的状态<span class="math inline">s</span>，采取一个曾经在该状态下执行过的动作<span class="math inline">a</span>,通过模型得到转移后的状态<span class="math inline">s'</span>以及奖励<span class="math inline">r</span>,并根据这个模拟数据<span class="math inline">(s,a,r,s')</span>,用Q-learning的更新方式来更新动作价值函数。</p>
+<div id="fig-youwumoxing" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-youwumoxing-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://hrl.boyuai.com/static/480.25b67b37.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-youwumoxing-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;3： 基于模型的强化学习方法与无模型的强化学习
+</figcaption>
+</figure>
+</div>
+<!-- - 初始化$Q(s,a)$,初始化模型$M(s,a)$
+- **for** 序列$e=1\rightarrow e$ **do**:
+-           得到初始状态$s$
+-           **for** $t=1\rightarrow T$ **do**:
+-                   用$\epsilon-$贪婪策略根据$Q$选择当前状态$s$下的动作$a$
+-                   得到环境反馈$r,s'$
+-                   
+$$
+\begin{aligned}
+Q(s,a)\leftarrow Q(s,a)&+\alpha\left[ \max_{a'}Q(s',a')-Q(s,a) \right]\\
+M(s,a)&\leftarrow r,s'
+\end{aligned}
+$$
+
+-               **for** 次数$n=1\rightarrow N$ **do**:
+-                       随机选择一个曾经访问过的状态$s_m$
+-                       采取一个曾经在状态$s_m$下执行过的动作$a_m$
+-                       $r_m,s_m'\leftarrow M(s_m,a_m)$
+-                       
+$$
+Q(s_m,a_m)\leftarrow Q(s_m,a_m)+\alpha\left[ r_m+\gamma \max_{a'}Q(s_m',a')-Q(s_m,a_m)\right]
+$$
+
+-              **end for**
+-              $s\leftarrow s'$
+-           **end for**
+- **end for** -->
+<p>在每次与环境进行交互执行一次 Q-learning 之后，Dyna-Q 会做<span class="math inline">n</span>次 Q-planning。其中 Q-planning 的次数<span class="math inline">N</span>是一个事先可以选择的超参数，当其为 <span class="math inline">0</span> 时就是普通的 Q-learning。值得注意的是，上述 Dyna-Q 算法是执行在一个离散并且确定的环境中，所以当看到一条经验数据<span class="math inline">(s,a,r,s')</span>时，可以直接对模型做出更新，即<span class="math inline">M(s,a)\leftarrow r,s'</span>.</p>
+</section>
+</section>
+<section id="dqn-算法" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> DQN 算法</h1>
+<section id="简介-2" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="简介-2"><span class="header-section-number">5.1</span> 简介</h2>
+<p>在 <a href="#sec-td" class="quarto-xref">章节&nbsp;3</a> 讲解的Q-learning算法中，我们以矩阵的方式建立了一张存储每个状态下所有动作<span class="math inline">Q</span>值得表格，表格中的每一个动作价值<span class="math inline">Q(s,a)</span>表示在状态<span class="math inline">s</span>下选择动作<span class="math inline">a</span>然后继续遵循某一策略预期能够得到的期望回报。然而，这种用表格存储动作价值的做法只在环境的状态和动作都是离散的，并且空间都比较小的情况下适用，我们之前进行代码实战的几个环境都是如此（如悬崖漫步）。当状态或者动作数量非常大的时候，这种做法就不适用了，更甚者，当状态或者动作连续的时候，就有无限个状态动作对，我们更加无法使用这种表格形式来记录各个状态动作对的<span class="math inline">Q</span>值。</p>
+<p>对于这种情况，我们需要用函数拟合的方法来估计<span class="math inline">Q</span>值，即将这个复杂的<span class="math inline">Q</span>值表格视作数据，使用一个参数化得函数<span class="math inline">Q_\theta</span>来拟合这些数据。很显然，这种函数拟合的方法存在一定的精度损失，因此被称为近似方法。我们今天要介绍的 DQN 算法便可以用来解决连续状态下离散动作的问题。</p>
+</section>
+<section id="dqn" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="dqn"><span class="header-section-number">5.2</span> DQN</h2>
+<p>在类似车杆的环境中得到动作价值函数<span class="math inline">Q(s,a)</span>,由于状态每一维度的值都是连续的，无法使用表格记录，因此一个常见的解决方法便是函数拟合的思想。由于神经网络具有强大的表达能力，因此我们可以用一个神经网络来表示函数<span class="math inline">Q.</span>若动作是连续（无限）的，神经网络的输入是状态<span class="math inline">s</span>和动作<span class="math inline">a</span>,然后输出一个标量，表示在状态<span class="math inline">s</span>下采取动作<span class="math inline">a</span>能获得的价值。若动作是离散（有限）的，除了可以采取动作连续情况下的做法，还可以只将状态<span class="math inline">s</span>输入到神经网络中，使其同时输出每一个动作的<span class="math inline">Q</span>值。通常DQN（以及Q-learning）只能处理动作离散的情况，因为在函数<span class="math inline">Q</span>的更新过程中有<span class="math inline">\max_a</span>这一操作。假设神经网络用来拟合函数的参数是<span class="math inline">\omega</span>，即每一个状态<span class="math inline">s</span>下所有可能动作<span class="math inline">a</span>的<span class="math inline">Q</span>值我们都能表示为<span class="math inline">Q_\omega(s,a)</span>.我们将用于拟合<span class="math inline">Q</span>的神经网络称为<strong>Q网络</strong>，如 <a href="#fig-Qwangluo" class="quarto-xref">图&nbsp;4</a> 所示。</p>
+<div id="fig-Qwangluo" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-Qwangluo-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://hrl.boyuai.com/static/640.46b13e89.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-Qwangluo-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;4： 工作在CartPole环境中的Q网络示意图
+</figcaption>
+</figure>
+</div>
+<p>那么Q网络的损失函数是什么样的呢？我们先回顾一下Q-learning的更新规则： <span class="math display">
+Q(s,a)\leftarrow Q(s,a)+\alpha\left[ r+\gamma \max_{a'\in\mathcal{A}}Q(s',a')-Q(s,a) \right]
+</span></p>
+<p>上述公式用时序差分学习目标<span class="math inline">r+\gamma \max_{a'\in\mathcal{A}}Q(s',a')</span>来增量式更新<span class="math inline">Q(s,a),</span>也就是说要使<span class="math inline">Q(s,a)</span>和TD目标<span class="math inline">r+\gamma \max_{a'\in\mathcal{A}}Q(s',a')</span>靠近。于是，对于一组数据<span class="math inline">\{(s_i,a_i,r_i,s_i')\}</span>，我们可以很自然地将Q网络的损失函数构造为均方误差的形式：</p>
+<p><span class="math display">
+\omega^*=\arg\max_{\omega}\frac{1}{2N}\sum_{i=1}^n\left[Q_\omega(s_i,a_i)-(r_i+\gamma\max_{a'}Q_\omega(s_i',a'))\right]^2
+</span></p>
+<p>至此，我们就可以将 Q-learning 扩展到神经网络形式——深度 Q 网络（deep Q network，DQN）算法。由于 DQN 是离线策略算法，因此我们在收集数据的时候可以使用一个<span class="math inline">\epsilon</span>-贪婪策略来平衡探索与利用，将收集到的数据存储起来，在后续的训练中使用。DQN 中还有两个非常重要的模块——经验回放和目标网络，它们能够帮助 DQN 取得稳定、出色的性能。</p>
+<p>DQN其余的内容留到后面再更新。</p>
+</section>
+</section>
+<section id="策略梯度算法" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> 策略梯度算法</h1>
+<section id="简介-3" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="简介-3"><span class="header-section-number">6.1</span> 简介</h2>
+<p>本书之前介绍的 Q-learning、DQN 及 DQN 改进算法都是<strong>基于价值</strong>（value-based）的方法，其中 Q-learning 是处理有限状态的算法，而 DQN 可以用来解决连续状态的问题。在强化学习中，除了基于值函数的方法，还有一支非常经典的方法，那就是<strong>基于策略</strong>（policy-based）的方法。对比两者，基于值函数的方法主要是学习值函数，然后根据值函数导出一个策略，学习过程中并不存在一个显式的策略；而基于策略的方法则是直接显式地学习一个目标策略。策略梯度是基于策略的方法的基础，本章从策略梯度算法说起。</p>
+</section>
+<section id="策略梯度" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="策略梯度"><span class="header-section-number">6.2</span> 策略梯度</h2>
+<p>基于策略的方法首先需要将策略参数化。假设目标策略<span class="math inline">\pi_\theta</span>是一个随机性策略且处处可微，其中<span class="math inline">\theta</span>使对应的参数。我们可以用一个线性模型或者神经网络模型来为这样一个策略函数建模，输入某个状态，然后输出一个动作的概率分布。我们的目标是要寻找一个最优策略并最大化这个策略在环境中的期望回报。我们将策略学习的目标函数定义为</p>
+<p><span class="math display">
+J(\theta)=\mathbb{E}_{s_0}[V^{\pi_\theta}(s_0)]
+</span> 其中<span class="math inline">s_0</span>表示初始状态。现在有了目标函数，我们将目标函数对策略<span class="math inline">\theta</span>求导，得到导数后，就可以用梯度上升方法来最大化这个目标函数从而得到最优策略。</p>
+<p><span class="math display">
+\begin{aligned}
+\nabla_\theta J(\theta)&amp;\propto \sum_{s\in\mathcal{S}}\nu^{\pi_\theta}(s)\sum_{a\in\mathcal{A}}Q^{\pi_\theta}(s,a)\nabla_\theta\pi_\theta(a|s)\\
+&amp;=\sum_{s\in\mathcal{S}}\nu^{\pi_\theta}(s)\sum_{a\in\mathcal{A}}\pi_\theta(a|s)Q^{\pi_\theta}(s,a)\frac{\nabla_\theta\pi_\theta(a|s)}{\pi_\theta(a|s)}\\
+&amp;=\mathbb{E}_{\pi_\theta}\left[ Q^{\pi_\theta}(s,a)\nabla_\theta\log\pi_\theta(a|s) \right]
+\end{aligned}
+</span> 其中<span class="math inline">\nu^\pi</span>使策略<span class="math inline">\pi</span>下的状态访问分布。</p>
+<p>上面的梯度可以用来更新策略。需要注意的是，因为上式中期望<span class="math inline">\mathbb{E}</span>的下标是<span class="math inline">\pi_\theta</span>，所以策略梯度算法为在线策略（on-policy）算法，即必须使用当前策略<span class="math inline">\pi_\theta</span>采样得到的数据来计算梯度。直观理解一下策略梯度这个公式，可以发现在每一个状态下，梯度的修改是让策略更多地去采样到带来较高<span class="math inline">Q</span>值的动作，更少地去采样到带来较低<span class="math inline">Q</span>值的动作。</p>
+<p>在计算策略梯度的公式中，需要用到<span class="math inline">Q^{\pi_\theta}(s,a),</span>可以用多种方法对它进行估计。接下来要介绍的REINFORCE算法便是采用了MC方法来估计<span class="math inline">Q^{\pi_\theta}(s,a),</span>对于一个有限步数的环境来说，REINFORCE算法中的策略梯度为： <span class="math display">
+\nabla_\theta J(\theta)=\mathbb{E}_{\pi_\theta}\left[ \sum_{t=0}^T\left( \sum_{t'=t}^T\gamma^{t'-t}r_{t'} \right)\nabla_\theta \log\pi_\theta(a_t|s_t) \right]
+</span> 其中<span class="math inline">T</span>是和环境交互的最大步数。</p>
+</section>
+</section>
+<section id="actor-critic-算法" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Actor-Critic 算法</h1>
+<section id="简介-4" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="简介-4"><span class="header-section-number">7.1</span> 简介</h2>
+<p>本书之前的章节讲解了基于值函数的方法（DQN）和基于策略的方法（REINFORCE），其中基于值函数的方法只学习一个价值函数，而基于策略的方法只学习一个策略函数。那么，一个很自然的问题是，有没有什么方法既学习价值函数，又学习策略函数呢？答案就是 Actor-Critic。Actor-Critic 是囊括一系列算法的整体架构，目前很多高效的前沿算法都属于 Actor-Critic 算法，本章接下来将会介绍一种最简单的 Actor-Critic 算法。需要明确的是，Actor-Critic 算法本质上是基于策略的算法，因为这一系列算法的目标都是优化一个带参数的策略，只是会额外学习价值函数，从而帮助策略函数更好地学习。</p>
+</section>
+<section id="actor-critic" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="actor-critic"><span class="header-section-number">7.2</span> Actor-Critic</h2>
+<p>回顾一下，在 REINFORCE 算法中，目标函数的梯度中有一项轨迹回报，用于指导策略的更新。REINFOCE 算法用蒙特卡洛方法来估计<span class="math inline">Q(s,a)</span>,那能不能考虑拟合一个值函数来指导策略进行学习呢？这正是Actor-Critic算法所做的。在策略梯度中，可以把梯度写成下面这个更一般的形式： <span class="math display">
+g=\mathbb{E}\left[ \sum_{t=0}^T\psi_t\nabla_\theta\log\pi_\theta(a_t|s_t) \right]
+</span> 其中<span class="math inline">\psi_t</span>可以用很多种形式：</p>
+<ol type="1">
+<li><span class="math inline">\sum_{t'=0}^T\gamma^{t'}r_{t'}</span>:轨迹的总回报；<br>
+</li>
+<li><span class="math inline">\sum_{t'=t}^T\gamma^{t'-t}r_{t'}</span>:动作<span class="math inline">a_t</span>之后的总回报；<br>
+</li>
+<li><span class="math inline">sum_{t'=t}^T\gamma^{t'-t}r_{t'}-b(s_t)</span>:基准线版本的改进；<br>
+</li>
+<li><span class="math inline">Q^{\pi_\theta}(s_t,a_t)</span>:动作价值函数；<br>
+</li>
+<li><span class="math inline">A^{\pi_\theta}(s_t,a_t)</span>:优势函数；<br>
+</li>
+<li><span class="math inline">r_t+\gamma V^{\pi_\theta}(s_{t+1})-V^{\pi_\theta}(s_{t})</span>:时序差分残差。</li>
+</ol>
+<p>REINFORCE通过MC采样的方法对策略梯度的估计是无偏的但是方差非常大，我们可以用形式3引入基线函数<span class="math inline">b(s_t)</span>来减小方差。此外，我们也可以采用Actor-Critic算法估计一个动作价值函数<span class="math inline">Q</span>,代替MC采样得到的回报，这便是形式4.这个时候我们可以把状态价值函数<span class="math inline">V</span>作为基线，从<span class="math inline">Q</span>函数减去这个<span class="math inline">V</span>函数则得到了<span class="math inline">A</span>函数，称之为优势函数，即形式5.更进一步，我们可以利用<span class="math inline">Q=r+\gamma V</span>得到形式6.</p>
+<p>本章主要介绍形式6，即通过时序差分残差<span class="math inline">\psi_t=r_t+\gamma V^{\pi_\theta}(s_{t+1})-V^{\pi_\theta}(s_{t})</span>来知道策略梯度进行学习。事实上，用<span class="math inline">Q</span>值或者<span class="math inline">V</span>值本质上也是用奖励来进行指导，但是用神经网络进行估计的方法可以减小方差、提高鲁棒性。除此之外，REINFORCE 算法基于蒙特卡洛采样，只能在序列结束后进行更新，这同时也要求任务具有有限的步数，而 Actor-Critic 算法则可以在每一步之后都进行更新，并且不对任务的步数做限制。</p>
+<p>我们将Actor-Critic分为两部分：Actor（策略网络）和Critic（价值网络），如 <a href="#fig-AC" class="quarto-xref">图&nbsp;5</a> 所示。</p>
+<ul>
+<li>Actor 要做的是与环境交互，并在 Critic 价值函数的指导下用策略梯度学习一个更好的策略。</li>
+<li>Critic 要做的是通过 Actor 与环境交互收集的数据学习一个价值函数，这个价值函数会用于判断在当前状态什么动作是好的，什么动作不是好的，进而帮助 Actor 进行策略更新。</li>
+</ul>
+<div id="fig-AC" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-AC-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://hrl.boyuai.com/static/640.5dee5ab0.jpg" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-AC-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;5： Actor和Critic的关系
+</figcaption>
+</figure>
+</div>
+<p>Actor的更新采用策略梯度的原则，那Critic如何更新呢？我们将Critic价值网络表示为<span class="math inline">V_\omega</span>,参数为<span class="math inline">\omega.</span>于是，我们可以采用时序差分残差的学习方式，对于单个数据定义如下价值函数的损失函数： <span class="math display">
+\mathcal{L}(\omega)=\frac{1}{2}\left(r+\gamma V_\omega(s_{t+1})-V_\omega(s_t)\right)^2
+</span> 与DQN中一样，我们采取类似与目标网络的方法，将上式中<span class="math inline">r+\gamma V_\omega(s_{t+1})</span>作为时序差分目标，不会产生梯度来更新价值函数，因此，价值函数的梯度为: <span class="math display">
+\nabla_\omega\mathcal{L}=-(r+\gamma V_\omega(s_{t+1})-V_\omega(s_t))\nabla_{\omega}V_\omega(s_t)
+</span> 然后使用梯度下降方法来更新Critic价值网络参数即可。</p>
 
 
 </section>
