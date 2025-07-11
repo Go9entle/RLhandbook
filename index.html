@@ -74,6 +74,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="site_libs/bootstrap/bootstrap-74d526360349614d085bfedd2de7155a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.js"></script>
+<link href="site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -101,6 +103,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<script>
+MathJax = {
+  loader: {
+    load: ['[tex]/boldsymbol']
+  },
+  tex: {
+    tags: "all",
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\\[','\\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    packages: {
+      '[+]': ['boldsymbol']
+    }
+  }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
   <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
   <script>document.addEventListener("DOMContentLoaded", function () {
@@ -209,7 +229,7 @@ window.Quarto = {
       <div>
       <div class="quarto-title-meta-heading">Modified</div>
       <div class="quarto-title-meta-contents">
-        <p class="date-modified">Jul 10, 2025</p>
+        <p class="date-modified">Jul 11, 2025</p>
       </div>
     </div>
       
@@ -276,6 +296,14 @@ window.Quarto = {
   <ul class="collapse">
   <li><a href="#简介-4" id="toc-简介-4" class="nav-link" data-scroll-target="#简介-4"><span class="header-section-number">7.1</span> 简介</a></li>
   <li><a href="#actor-critic" id="toc-actor-critic" class="nav-link" data-scroll-target="#actor-critic"><span class="header-section-number">7.2</span> Actor-Critic</a></li>
+  <li><a href="#cartpole环境" id="toc-cartpole环境" class="nav-link" data-scroll-target="#cartpole环境"><span class="header-section-number">7.3</span> CartPole环境</a></li>
+  <li><a href="#actor-critic-代码实践" id="toc-actor-critic-代码实践" class="nav-link" data-scroll-target="#actor-critic-代码实践"><span class="header-section-number">7.4</span> Actor-Critic 代码实践</a></li>
+  <li><a href="#小结-1" id="toc-小结-1" class="nav-link" data-scroll-target="#小结-1"><span class="header-section-number">7.5</span> 小结</a></li>
+  </ul></li>
+  <li><a href="#trpo-算法" id="toc-trpo-算法" class="nav-link" data-scroll-target="#trpo-算法"><span class="header-section-number">8</span> TRPO 算法</a>
+  <ul class="collapse">
+  <li><a href="#简介-5" id="toc-简介-5" class="nav-link" data-scroll-target="#简介-5"><span class="header-section-number">8.1</span> 简介</a></li>
+  <li><a href="#策略目标" id="toc-策略目标" class="nav-link" data-scroll-target="#策略目标"><span class="header-section-number">8.2</span> 策略目标</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -327,7 +355,7 @@ V(s)=r(s)+\gamma \sum_{s'\in \mathcal{S}}p(s'\mid s)V(s')
 \end{aligned}
 </span> 其中<span class="math inline">\mathcal{V,R,P}</span>均为向量或矩阵。以上解析解的计算复杂度是<span class="math inline">O(n^3),</span>其中<span class="math inline">n</span>是状态个数，因此这种方法只适用于很小的MRP。求解较大规模的MRP奖励过程中的价值函数时，可以使用<strong>动态规划</strong>、<strong>蒙特卡洛</strong>、<strong>时序差分</strong>，这些方法将在之后的章节介绍。</p>
 <p>接下来编写代码来实现求解价值函数的解析解方法，并据此计算该马尔可夫奖励过程中所有状态的价值。</p>
-<div id="f44e98e1" class="cell" data-execution_count="1">
+<div id="d5a6f954" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> compute(P, rewards, gamma, states_num):</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">''' 利用贝尔曼方程的矩阵形式计算解析解,states_num是MRP的状态数 '''</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    rewards <span class="op">=</span> np.array(rewards).reshape((<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>))  <span class="co">#将rewards写成列向量形式</span></span>
@@ -394,7 +422,7 @@ Q^{\pi}(s,a)&amp;=\mathbb{E}_{\pi}\left[R_t+\gamma Q^{\pi}(S_{t+1},A_{t+1}|S_t=s
 </figure>
 </div>
 <p>接下来我们编写代码来表示 <a href="#fig-mdp" class="quarto-xref">图&nbsp;1</a> 中的MDP，并定义两个策略，第一个策略是一个完全随机策略，即在每个状态下，智能体会以同样的概率选取它可能采取的动作。例如，在<span class="math inline">s_1</span>下智能体会以<span class="math inline">0.5,0.5</span>的概率选取动作”保持<span class="math inline">s_1</span>“和”前往<span class="math inline">s_2</span>“.第二个策略是一个提前设定的策略。</p>
-<div id="94f2e4e8" class="cell" data-execution_count="2">
+<div id="7b2276fa" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>S <span class="op">=</span> [<span class="st">"s1"</span>, <span class="st">"s2"</span>, <span class="st">"s3"</span>, <span class="st">"s4"</span>, <span class="st">"s5"</span>]  <span class="co"># 状态集合</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> [<span class="st">"保持s1"</span>, <span class="st">"前往s1"</span>, <span class="st">"前往s2"</span>, <span class="st">"前往s3"</span>, <span class="st">"前往s4"</span>, <span class="st">"前往s5"</span>, <span class="st">"概率前往"</span>]  <span class="co"># 动作集合</span></span>
@@ -462,7 +490,7 @@ P'(s'|s)=\sum_{a\in\mathcal{A}}\pi(a|s)
 </span></p>
 <p>于是，我们构建得到了一个MRP:<span class="math inline">\langle \mathcal{S},P',r',\gamma\rangle</span>.根据价值函数的定义可以发现，转化前的 MDP 的状态价值函数和转化后的 MRP 的价值函数是一样的。于是我们可以用 MRP 中计算价值函数的解析解来计算这个 MDP 中该策略的状态价值函数。</p>
 <p>接下来，我们用代码实现该方法，计算用随即策略<code>Pi_1</code>时的状态价值函数，为了简单起见，我们将直接给出转化后的MRP的状态转移矩阵和奖励函数。</p>
-<div id="b3b9c56b" class="cell" data-execution_count="3">
+<div id="ded599bb" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>gamma <span class="op">=</span> <span class="fl">0.5</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 转化后的MRP的状态转移矩阵</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>P_from_mdp_to_mrp <span class="op">=</span> [</span>
@@ -519,7 +547,7 @@ s_2^{(i)}\overset{a_2^{(i)}}{\rightarrow},...,\overset{a_{T-1}^{(i)}}{\rightarro
 <li><span class="math inline">V(s)\leftarrow V(s)+\frac{G-V(s)}{N(s)}</span></li>
 </ul>
 <p>接下来我们用代码定义一个采样函数，采样函数需要遵守状态转移矩阵和相应策略，每次将<code>(s,a,r,s_next)</code>元组放入序列中，直到到达终止序列。然后我们通过该函数，用随即策略在 <a href="#fig-mdp" class="quarto-xref">图&nbsp;1</a> 的MDP中随机采样几条序列。</p>
-<div id="6aafd3f4" class="cell" data-execution_count="4">
+<div id="18afa584" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> sample(MDP, Pi, timestep_max, number):</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">''' 采样函数,策略Pi,限制最长时间步timestep_max,总共采样序列数number '''</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    S, A, P, R, gamma <span class="op">=</span> MDP</span>
@@ -559,14 +587,14 @@ s_2^{(i)}\overset{a_2^{(i)}}{\rightarrow},...,\overset{a_{T-1}^{(i)}}{\rightarro
 <span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'第五条序列</span><span class="ch">\n</span><span class="st">'</span>, episodes[<span class="dv">4</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>第一条序列
- [('s1', '前往s2', 0, 's2'), ('s2', '前往s1', -1, 's1'), ('s1', '保持s1', -1, 's1'), ('s1', '前往s2', 0, 's2'), ('s2', '前往s3', -2, 's3'), ('s3', '前往s5', 0, 's5')]
+ [('s3', '前往s5', 0, 's5')]
 第二条序列
- [('s3', '前往s4', -2, 's4'), ('s4', '概率前往', 1, 's3'), ('s3', '前往s5', 0, 's5')]
+ [('s3', '前往s4', -2, 's4'), ('s4', '概率前往', 1, 's2'), ('s2', '前往s3', -2, 's3'), ('s3', '前往s5', 0, 's5')]
 第五条序列
- [('s1', '保持s1', -1, 's1'), ('s1', '保持s1', -1, 's1'), ('s1', '保持s1', -1, 's1'), ('s1', '保持s1', -1, 's1'), ('s1', '前往s2', 0, 's2'), ('s2', '前往s1', -1, 's1'), ('s1', '前往s2', 0, 's2'), ('s2', '前往s3', -2, 's3'), ('s3', '前往s4', -2, 's4'), ('s4', '前往s5', 10, 's5')]</code></pre>
+ [('s1', '前往s2', 0, 's2'), ('s2', '前往s1', -1, 's1'), ('s1', '前往s2', 0, 's2'), ('s2', '前往s3', -2, 's3'), ('s3', '前往s5', 0, 's5')]</code></pre>
 </div>
 </div>
-<div id="98e460f6" class="cell" data-execution_count="5">
+<div id="49f8309f" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 对所有采样序列计算所有状态的价值</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> MC(episodes, V, N, gamma):</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> episode <span class="kw">in</span> episodes:</span>
@@ -588,7 +616,7 @@ s_2^{(i)}\overset{a_2^{(i)}}{\rightarrow},...,\overset{a_{T-1}^{(i)}}{\rightarro
 <span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"使用蒙特卡洛方法计算MDP的状态价值为</span><span class="ch">\n</span><span class="st">"</span>, V)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>使用蒙特卡洛方法计算MDP的状态价值为
- {'s1': -1.1920298683502757, 's2': -1.6823415654521157, 's3': 0.5219282166886301, 's4': 6.0421585314201565, 's5': 0}</code></pre>
+ {'s1': -1.2192842908942672, 's2': -1.6739589995351325, 's3': 0.4884249534159025, 's4': 5.84446859105293, 's5': 0}</code></pre>
 </div>
 </div>
 <p>可以看到用蒙特卡洛方法估计得到的状态价值和我们用 MRP 解析解得到的状态价值是很接近的。这得益于我们采样了比较多的序列，感兴趣的读者可以尝试修改采样次数，然后观察蒙特卡洛方法的结果。</p>
@@ -676,7 +704,7 @@ Q(s_t,a_t)\leftarrow Q(s_t,a_t)+\alpha\left[ R_t+\gamma Q(s_{t+1},a_{t+1})-Q(s_t
 </span></p>
 <p>现在，我们就可以得到一个实际的基于时序差分方法的强化学习算法。这个算法被称为 Sarsa，因为它的动作价值更新用到了当前状态<span class="math inline">s</span>、当前动作<span class="math inline">a</span>、获得的奖励<span class="math inline">r</span>、下一个状态<span class="math inline">s'</span>和下一个动作<span class="math inline">a'</span>,将这些符号拼接后就得到了算法名称，这是一种On-Policy(在线策略，<span class="math inline">a_{t+1}</span>和<span class="math inline">a_t</span>来自于同一策略)的时序差分强化学习算法。</p>
 <p>现在我们在悬崖漫步环境下尝试Sarsa算法。首先给出悬崖漫步环境的代码，此时环境不需要提供奖励函数和状态转移函数，而是需要提供一个和智能体进行交互的函数<code>step()</code>,该函数将智能体的动作作为输入，将奖励和下一个状态输出给智能体。</p>
-<div id="ac10501c" class="cell" data-execution_count="6">
+<div id="e0a1d0ff" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tqdm <span class="im">import</span> tqdm  <span class="co"># tqdm是显示循环进度条的库</span></span>
@@ -710,7 +738,7 @@ Q(s_t,a_t)\leftarrow Q(s_t,a_t)+\alpha\left[ R_t+\gamma Q(s_{t+1},a_{t+1})-Q(s_t
 <span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.y <span class="op">*</span> <span class="va">self</span>.ncol <span class="op">+</span> <span class="va">self</span>.x</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>然后我们来实现Sarsa算法，主要维护一个表格<code>Q_table()</code>,用来存储当前策略下所有状态动作对的价值，在用Sarsa算法和环境交互时，用<span class="math inline">\epsilon-</span>贪婪策略进行采样，在更新Sarsa算法时，使用时序差分的公式。我们默认终止状态时所有动作的价值都是<span class="math inline">0</span>,这些价值在初始化为<span class="math inline">0</span>后就不会进行更新。</p>
-<div id="a640936f" class="cell" data-execution_count="7">
+<div id="44853261" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Sarsa:</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">""" Sarsa算法 """</span></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, ncol, nrow, epsilon, alpha, gamma, n_action<span class="op">=</span><span class="dv">4</span>):</span>
@@ -740,7 +768,7 @@ Q(s_t,a_t)\leftarrow Q(s_t,a_t)+\alpha\left[ R_t+\gamma Q(s_{t+1},a_{t+1})-Q(s_t
 <span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.Q_table[s0, a0] <span class="op">+=</span> <span class="va">self</span>.alpha <span class="op">*</span> td_error</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>接下来我们就在悬崖漫步环境中运行Sarsa算法，一起来看看结果吧！</p>
-<div id="5df7c017" class="cell" data-execution_count="8">
+<div id="29996ede" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>ncol <span class="op">=</span> <span class="dv">12</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>nrow <span class="op">=</span> <span class="dv">4</span></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>env <span class="op">=</span> CliffWalkingEnv(ncol, nrow)</span>
@@ -792,7 +820,7 @@ Q(s_t,a_t)\leftarrow Q(s_t,a_t)+\alpha\left[ R_t+\gamma Q(s_{t+1},a_{t+1})-Q(s_t
 </div>
 </div>
 <p>我们发现，随着训练的进行，Sarsa 算法获得的回报越来越高。在进行 500 条序列的学习后，可以获得 −20 左右的回报，此时已经非常接近最优策略了。然后我们看一下 Sarsa 算法得到的策略在各个状态下会使智能体采取什么样的动作。</p>
-<div id="b28c14de" class="cell" data-execution_count="9">
+<div id="153cfbaa" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> print_agent(agent, env, action_meaning, disaster<span class="op">=</span>[], end<span class="op">=</span>[]):</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(env.nrow):</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(env.ncol):</span>
@@ -831,7 +859,7 @@ G_t=R_t+\gamma R_{t+1}+\dots+\gamma^{n-1}R_{t+n-1}+\gamma^n Q(s_{t+n},a_{t+n})
 </span> 于是Sarsa算法中的动作价值函数更新公式变为 <span class="math display">
 Q(s_t,a_t)\leftarrow Q(s_t,a_t)+\alpha\left[ R_t+\gamma R_{t+1}+\dots+\gamma^{n-1}R_{t+n-1}+\gamma^n Q(s_{t+n},a_{t+n})-Q(s_t,a_t) \right]
 </span> 接下来将用代码实现<span class="math inline">n</span>步Sarsa算法，在Sarsa代码基础上进行修改，引入多步时序差分计算。</p>
-<div id="c3a6a8db" class="cell" data-execution_count="10">
+<div id="f91314e1" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> nstep_Sarsa:</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">""" n步Sarsa算法 """</span></span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, n, ncol, nrow, epsilon, alpha, gamma, n_action<span class="op">=</span><span class="dv">4</span>):</span>
@@ -883,7 +911,7 @@ Q(s_t,a_t)\leftarrow Q(s_t,a_t)+\alpha\left[ R_t+\gamma R_{t+1}+\dots+\gamma^{n-
 <span id="cb14-49"><a href="#cb14-49" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.action_list <span class="op">=</span> []</span>
 <span id="cb14-50"><a href="#cb14-50" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.reward_list <span class="op">=</span> []</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="f3d4d7f9" class="cell" data-execution_count="11">
+<div id="1d18521f" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">0</span>)</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>n_step <span class="op">=</span> <span class="dv">5</span>  <span class="co"># 5步Sarsa算法</span></span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>alpha <span class="op">=</span> <span class="fl">0.1</span></span>
@@ -934,7 +962,7 @@ Q(s_t,a_t)\leftarrow Q(s_t,a_t)+\alpha\left[ R_t+\gamma R_{t+1}+\dots+\gamma^{n-
 </div>
 </div>
 <p>通过实验结果可以发现，<span class="math inline">5</span>步Sarsa算法的收敛速度比单步Sarsa算法更快，我们看下此时的策略表现。</p>
-<div id="0ba97e34" class="cell" data-execution_count="12">
+<div id="1f8ba1c5" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>action_meaning <span class="op">=</span> [<span class="st">'^'</span>, <span class="st">'v'</span>, <span class="st">'&lt;'</span>, <span class="st">'&gt;'</span>]</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'5步Sarsa算法最终收敛得到的策略为：'</span>)</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>print_agent(agent, env, action_meaning, <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">37</span>, <span class="dv">47</span>)), [<span class="dv">47</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -973,7 +1001,7 @@ Q^*(s,a)=r(s,a)+\gamma \sum_{s'\in\mathcal{S}}P(s'|s,a)\max_{a'}Q^*(s',a')
 </div>
 <p>在之后的讲解中，我们会注明各个算法分别属于这两类中的哪一类。如前文所述，离线策略算法能够重复使用过往训练样本，往往具有更小的样本复杂度，也因此更受欢迎。</p>
 <p>我们接下来仍然在悬崖漫步环境下来实现 Q-learning 算法。</p>
-<div id="0933a67e" class="cell" data-execution_count="13">
+<div id="cdce2e28" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> QLearning:</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">""" Q-learning算法 """</span></span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, ncol, nrow, epsilon, alpha, gamma, n_action<span class="op">=</span><span class="dv">4</span>):</span>
@@ -1003,7 +1031,7 @@ Q^*(s,a)=r(s,a)+\gamma \sum_{s'\in\mathcal{S}}P(s'|s,a)\max_{a'}Q^*(s',a')
 <span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>        ) <span class="op">-</span> <span class="va">self</span>.Q_table[s0, a0]</span>
 <span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.Q_table[s0, a0] <span class="op">+=</span> <span class="va">self</span>.alpha <span class="op">*</span> td_error</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="41d9ae55" class="cell" data-execution_count="14">
+<div id="4a13253a" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">0</span>)</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>epsilon <span class="op">=</span> <span class="fl">0.1</span></span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>alpha <span class="op">=</span> <span class="fl">0.1</span></span>
@@ -1220,6 +1248,348 @@ g=\mathbb{E}\left[ \sum_{t=0}^T\psi_t\nabla_\theta\log\pi_\theta(a_t|s_t) \right
 </span> 与DQN中一样，我们采取类似与目标网络的方法，将上式中<span class="math inline">r+\gamma V_\omega(s_{t+1})</span>作为时序差分目标，不会产生梯度来更新价值函数，因此，价值函数的梯度为: <span class="math display">
 \nabla_\omega\mathcal{L}=-(r+\gamma V_\omega(s_{t+1})-V_\omega(s_t))\nabla_{\omega}V_\omega(s_t)
 </span> 然后使用梯度下降方法来更新Critic价值网络参数即可。</p>
+<div class="pseudocode-container quarto-float" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-line-number="true" data-pseudocode-number="1" data-no-end="false" data-comment-delimiter="//" data-line-number-punc=":">
+<div class="pseudocode">
+\begin{algorithm} \caption{Actor-Critic算法流程} \begin{algorithmic} \State \textbf{初始化策略网络参数}$\theta$, \textbf{价值网络参数}$\omega$ \For{$e=1\rightarrow E$} \State \textbf{用当前策略}$\pi_{\theta}$\textbf{采样轨迹}$\{s_1,a_1,r_1,s_2,a_2,r_2,...\}$ \State \textbf{为每一步数据计算}$\delta_t=r_t+\gamma V_{\omega}(s_{t+1})-V_\omega(s_t)$ \State \textbf{更新价值参数}$\omega=\omega+\alpha_\omega\sum_t\delta_t\nabla_{\omega}V_\omega(s_t)$ \State \textbf{更新策略参数}$\theta=\theta+\alpha_\theta\sum_t\delta_t\nabla_{\theta}\log\pi_{\theta}(a_t|s_t)$ \EndFor \end{algorithmic} \end{algorithm}
+</div>
+</div>
+<p>以上就是Actor-Critic算法的流程，下面我们用代码实现它！</p>
+</section>
+<section id="cartpole环境" class="level2" data-number="7.3">
+<h2 data-number="7.3" class="anchored" data-anchor-id="cartpole环境"><span class="header-section-number">7.3</span> CartPole环境</h2>
+<p>在介绍A-C算法的代码之前，我们先介绍一下如 <a href="#fig-cartpole" class="quarto-xref">图&nbsp;6</a> 所示的CartPole环境，它的状态值是连续的，动作值是离散的。</p>
+<div id="fig-cartpole" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cartpole-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://hrl.boyuai.com/static/cartpole.e4a03ca5.gif" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cartpole-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;6： CartPole环境示意图
+</figcaption>
+</figure>
+</div>
+<p>在车杆环境中，有一辆小车，智能体的任务是通过左右移动保持车上的杆竖直，若杆的倾斜度数过大，或者车子离初始位置左右的偏离程度过大，或者坚持时间到达 200 帧，则游戏结束。智能体的状态是一个维数为 4 的向量，每一维都是连续的，其动作是离散的，动作空间大小为 2，详见@tbl-cartpole1,<a href="#tbl-cartpole2" class="quarto-xref">表&nbsp;2</a>.</p>
+<div id="tbl-cartpole1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-cartpole1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+表&nbsp;1： CartPole环境的状态空间
+</figcaption>
+<div aria-describedby="tbl-cartpole1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>维度</th>
+<th>意义</th>
+<th>最小值</th>
+<th>最大值</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>车的位置</td>
+<td>-2.4</td>
+<td>2.4</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>车的速度</td>
+<td>-Inf</td>
+<td>Inf</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>杆的角度</td>
+<td>~-41.8°</td>
+<td>~41.8°</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>杆尖端的速度</td>
+<td>-Inf</td>
+<td>Inf</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<div id="tbl-cartpole2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-cartpole2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+表&nbsp;2： CartPole环境的动作空间
+</figcaption>
+<div aria-describedby="tbl-cartpole2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>标号</th>
+<th>动作</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>向左移动小车</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>向右移动小车</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+</section>
+<section id="actor-critic-代码实践" class="level2" data-number="7.4">
+<h2 data-number="7.4" class="anchored" data-anchor-id="actor-critic-代码实践"><span class="header-section-number">7.4</span> Actor-Critic 代码实践</h2>
+<p>我们想在车杆环境下进行A-C算法的实验，引入一些必要的包</p>
+<div id="d67b14c8" class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> gym</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch <span class="im">import</span> nn</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch.nn <span class="im">import</span> functional <span class="im">as</span> F</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> rl_utils</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tqdm <span class="im">import</span> tqdm</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>其中<code>rl_utils</code>文件如下所示：</p>
+<div id="ec58e157" class="cell" data-execution_count="16">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tqdm <span class="im">import</span> tqdm</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> collections</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> random</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> ReplayBuffer:</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, capacity):</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.<span class="bu">buffer</span> <span class="op">=</span> collections.deque(maxlen<span class="op">=</span>capacity) </span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> add(<span class="va">self</span>, state, action, reward, next_state, done): </span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.<span class="bu">buffer</span>.append((state, action, reward, next_state, done)) </span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> sample(<span class="va">self</span>, batch_size): </span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>        transitions <span class="op">=</span> random.sample(<span class="va">self</span>.<span class="bu">buffer</span>, batch_size)</span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>        state, action, reward, next_state, done <span class="op">=</span> <span class="bu">zip</span>(<span class="op">*</span>transitions)</span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> np.array(state), action, reward, np.array(next_state), done </span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> size(<span class="va">self</span>): </span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">len</span>(<span class="va">self</span>.<span class="bu">buffer</span>)</span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> moving_average(a, window_size):</span>
+<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a>    cumulative_sum <span class="op">=</span> np.cumsum(np.insert(a, <span class="dv">0</span>, <span class="dv">0</span>)) </span>
+<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a>    middle <span class="op">=</span> (cumulative_sum[window_size:] <span class="op">-</span> cumulative_sum[:<span class="op">-</span>window_size]) <span class="op">/</span> window_size</span>
+<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> np.arange(<span class="dv">1</span>, window_size<span class="op">-</span><span class="dv">1</span>, <span class="dv">2</span>)</span>
+<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a>    begin <span class="op">=</span> np.cumsum(a[:window_size<span class="op">-</span><span class="dv">1</span>])[::<span class="dv">2</span>] <span class="op">/</span> r</span>
+<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a>    end <span class="op">=</span> (np.cumsum(a[:<span class="op">-</span>window_size:<span class="op">-</span><span class="dv">1</span>])[::<span class="dv">2</span>] <span class="op">/</span> r)[::<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb22-28"><a href="#cb22-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.concatenate((begin, middle, end))</span>
+<span id="cb22-29"><a href="#cb22-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-30"><a href="#cb22-30" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> train_on_policy_agent(env, agent, num_episodes):</span>
+<span id="cb22-31"><a href="#cb22-31" aria-hidden="true" tabindex="-1"></a>    return_list <span class="op">=</span> []</span>
+<span id="cb22-32"><a href="#cb22-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">10</span>):</span>
+<span id="cb22-33"><a href="#cb22-33" aria-hidden="true" tabindex="-1"></a>        <span class="cf">with</span> tqdm(total<span class="op">=</span><span class="bu">int</span>(num_episodes<span class="op">/</span><span class="dv">10</span>), desc<span class="op">=</span><span class="st">'Iteration </span><span class="sc">%d</span><span class="st">'</span> <span class="op">%</span> i) <span class="im">as</span> pbar:</span>
+<span id="cb22-34"><a href="#cb22-34" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> i_episode <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">int</span>(num_episodes<span class="op">/</span><span class="dv">10</span>)):</span>
+<span id="cb22-35"><a href="#cb22-35" aria-hidden="true" tabindex="-1"></a>                episode_return <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb22-36"><a href="#cb22-36" aria-hidden="true" tabindex="-1"></a>                transition_dict <span class="op">=</span> {<span class="st">'states'</span>: [], <span class="st">'actions'</span>: [], <span class="st">'next_states'</span>: [], <span class="st">'rewards'</span>: [], <span class="st">'dones'</span>: []}</span>
+<span id="cb22-37"><a href="#cb22-37" aria-hidden="true" tabindex="-1"></a>                state <span class="op">=</span> env.reset(seed<span class="op">=</span><span class="dv">0</span>)[<span class="dv">0</span>]</span>
+<span id="cb22-38"><a href="#cb22-38" aria-hidden="true" tabindex="-1"></a>                done <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb22-39"><a href="#cb22-39" aria-hidden="true" tabindex="-1"></a>                <span class="cf">while</span> <span class="kw">not</span> done:</span>
+<span id="cb22-40"><a href="#cb22-40" aria-hidden="true" tabindex="-1"></a>                    action <span class="op">=</span> agent.take_action(state)</span>
+<span id="cb22-41"><a href="#cb22-41" aria-hidden="true" tabindex="-1"></a>                    next_state, reward, done, _,_ <span class="op">=</span> env.step(action)</span>
+<span id="cb22-42"><a href="#cb22-42" aria-hidden="true" tabindex="-1"></a>                    transition_dict[<span class="st">'states'</span>].append(state)</span>
+<span id="cb22-43"><a href="#cb22-43" aria-hidden="true" tabindex="-1"></a>                    transition_dict[<span class="st">'actions'</span>].append(action)</span>
+<span id="cb22-44"><a href="#cb22-44" aria-hidden="true" tabindex="-1"></a>                    transition_dict[<span class="st">'next_states'</span>].append(next_state)</span>
+<span id="cb22-45"><a href="#cb22-45" aria-hidden="true" tabindex="-1"></a>                    transition_dict[<span class="st">'rewards'</span>].append(reward)</span>
+<span id="cb22-46"><a href="#cb22-46" aria-hidden="true" tabindex="-1"></a>                    transition_dict[<span class="st">'dones'</span>].append(done)</span>
+<span id="cb22-47"><a href="#cb22-47" aria-hidden="true" tabindex="-1"></a>                    state <span class="op">=</span> next_state</span>
+<span id="cb22-48"><a href="#cb22-48" aria-hidden="true" tabindex="-1"></a>                    episode_return <span class="op">+=</span> reward</span>
+<span id="cb22-49"><a href="#cb22-49" aria-hidden="true" tabindex="-1"></a>                return_list.append(episode_return)</span>
+<span id="cb22-50"><a href="#cb22-50" aria-hidden="true" tabindex="-1"></a>                agent.update(transition_dict)</span>
+<span id="cb22-51"><a href="#cb22-51" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> (i_episode<span class="op">+</span><span class="dv">1</span>) <span class="op">%</span> <span class="dv">10</span> <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb22-52"><a href="#cb22-52" aria-hidden="true" tabindex="-1"></a>                    pbar.set_postfix({<span class="st">'episode'</span>: <span class="st">'</span><span class="sc">%d</span><span class="st">'</span> <span class="op">%</span> (num_episodes<span class="op">/</span><span class="dv">10</span> <span class="op">*</span> i <span class="op">+</span> i_episode<span class="op">+</span><span class="dv">1</span>), <span class="st">'return'</span>: <span class="st">'</span><span class="sc">%.3f</span><span class="st">'</span> <span class="op">%</span> np.mean(return_list[<span class="op">-</span><span class="dv">10</span>:])})</span>
+<span id="cb22-53"><a href="#cb22-53" aria-hidden="true" tabindex="-1"></a>                pbar.update(<span class="dv">1</span>)</span>
+<span id="cb22-54"><a href="#cb22-54" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> return_list</span>
+<span id="cb22-55"><a href="#cb22-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-56"><a href="#cb22-56" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> train_off_policy_agent(env, agent, num_episodes, replay_buffer, minimal_size, batch_size):</span>
+<span id="cb22-57"><a href="#cb22-57" aria-hidden="true" tabindex="-1"></a>    return_list <span class="op">=</span> []</span>
+<span id="cb22-58"><a href="#cb22-58" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">10</span>):</span>
+<span id="cb22-59"><a href="#cb22-59" aria-hidden="true" tabindex="-1"></a>        <span class="cf">with</span> tqdm(total<span class="op">=</span><span class="bu">int</span>(num_episodes<span class="op">/</span><span class="dv">10</span>), desc<span class="op">=</span><span class="st">'Iteration </span><span class="sc">%d</span><span class="st">'</span> <span class="op">%</span> i) <span class="im">as</span> pbar:</span>
+<span id="cb22-60"><a href="#cb22-60" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> i_episode <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">int</span>(num_episodes<span class="op">/</span><span class="dv">10</span>)):</span>
+<span id="cb22-61"><a href="#cb22-61" aria-hidden="true" tabindex="-1"></a>                episode_return <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb22-62"><a href="#cb22-62" aria-hidden="true" tabindex="-1"></a>                state <span class="op">=</span> env.reset(seed<span class="op">=</span><span class="dv">0</span>)[<span class="dv">0</span>]</span>
+<span id="cb22-63"><a href="#cb22-63" aria-hidden="true" tabindex="-1"></a>                done <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb22-64"><a href="#cb22-64" aria-hidden="true" tabindex="-1"></a>                steps <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb22-65"><a href="#cb22-65" aria-hidden="true" tabindex="-1"></a>                <span class="cf">while</span> <span class="kw">not</span> done <span class="kw">and</span> steps <span class="op">&lt;</span><span class="dv">200</span>:</span>
+<span id="cb22-66"><a href="#cb22-66" aria-hidden="true" tabindex="-1"></a>                    steps<span class="op">+=</span><span class="dv">1</span></span>
+<span id="cb22-67"><a href="#cb22-67" aria-hidden="true" tabindex="-1"></a>                    action <span class="op">=</span> agent.take_action(state)</span>
+<span id="cb22-68"><a href="#cb22-68" aria-hidden="true" tabindex="-1"></a>                    next_state, reward, done, _,_ <span class="op">=</span> env.step(action)</span>
+<span id="cb22-69"><a href="#cb22-69" aria-hidden="true" tabindex="-1"></a>                    replay_buffer.add(state, action, reward, next_state, done)</span>
+<span id="cb22-70"><a href="#cb22-70" aria-hidden="true" tabindex="-1"></a>                    state <span class="op">=</span> next_state</span>
+<span id="cb22-71"><a href="#cb22-71" aria-hidden="true" tabindex="-1"></a>                    episode_return <span class="op">+=</span> reward</span>
+<span id="cb22-72"><a href="#cb22-72" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">if</span> replay_buffer.size() <span class="op">&gt;</span> minimal_size:</span>
+<span id="cb22-73"><a href="#cb22-73" aria-hidden="true" tabindex="-1"></a>                        b_s, b_a, b_r, b_ns, b_d <span class="op">=</span> replay_buffer.sample(batch_size)</span>
+<span id="cb22-74"><a href="#cb22-74" aria-hidden="true" tabindex="-1"></a>                        transition_dict <span class="op">=</span> {<span class="st">'states'</span>: b_s, <span class="st">'actions'</span>: b_a, <span class="st">'next_states'</span>: b_ns, <span class="st">'rewards'</span>: b_r, <span class="st">'dones'</span>: b_d}</span>
+<span id="cb22-75"><a href="#cb22-75" aria-hidden="true" tabindex="-1"></a>                        agent.update(transition_dict)</span>
+<span id="cb22-76"><a href="#cb22-76" aria-hidden="true" tabindex="-1"></a>                return_list.append(episode_return)</span>
+<span id="cb22-77"><a href="#cb22-77" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> (i_episode<span class="op">+</span><span class="dv">1</span>) <span class="op">%</span> <span class="dv">10</span> <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb22-78"><a href="#cb22-78" aria-hidden="true" tabindex="-1"></a>                    pbar.set_postfix({<span class="st">'episode'</span>: <span class="st">'</span><span class="sc">%d</span><span class="st">'</span> <span class="op">%</span> (num_episodes<span class="op">/</span><span class="dv">10</span> <span class="op">*</span> i <span class="op">+</span> i_episode<span class="op">+</span><span class="dv">1</span>), <span class="st">'return'</span>: <span class="st">'</span><span class="sc">%.3f</span><span class="st">'</span> <span class="op">%</span> np.mean(return_list[<span class="op">-</span><span class="dv">10</span>:])})</span>
+<span id="cb22-79"><a href="#cb22-79" aria-hidden="true" tabindex="-1"></a>                pbar.update(<span class="dv">1</span>)</span>
+<span id="cb22-80"><a href="#cb22-80" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> return_list</span>
+<span id="cb22-81"><a href="#cb22-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-82"><a href="#cb22-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-83"><a href="#cb22-83" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> compute_advantage(gamma, lmbda, td_delta):</span>
+<span id="cb22-84"><a href="#cb22-84" aria-hidden="true" tabindex="-1"></a>    td_delta <span class="op">=</span> td_delta.detach().numpy()</span>
+<span id="cb22-85"><a href="#cb22-85" aria-hidden="true" tabindex="-1"></a>    advantage_list <span class="op">=</span> []</span>
+<span id="cb22-86"><a href="#cb22-86" aria-hidden="true" tabindex="-1"></a>    advantage <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb22-87"><a href="#cb22-87" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> delta <span class="kw">in</span> td_delta[::<span class="op">-</span><span class="dv">1</span>]:</span>
+<span id="cb22-88"><a href="#cb22-88" aria-hidden="true" tabindex="-1"></a>        advantage <span class="op">=</span> gamma <span class="op">*</span> lmbda <span class="op">*</span> advantage <span class="op">+</span> delta</span>
+<span id="cb22-89"><a href="#cb22-89" aria-hidden="true" tabindex="-1"></a>        advantage_list.append(advantage)</span>
+<span id="cb22-90"><a href="#cb22-90" aria-hidden="true" tabindex="-1"></a>    advantage_list.reverse()</span>
+<span id="cb22-91"><a href="#cb22-91" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> torch.tensor(advantage_list, dtype<span class="op">=</span>torch.<span class="bu">float</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>首先定义策略网络<code>PolicyNet</code>,其输入是某个状态，输出是该状态下的动作概率分布，这里采用在离散动作空间上的<code>softmax()</code>函数来实现一个可学习的<strong>多项分布</strong>。</p>
+<div id="5a51d840" class="cell" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> PolicyNet(torch.nn.Module):</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, state_dim, hidden_dim, action_dim):</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>(PolicyNet, <span class="va">self</span>).<span class="fu">__init__</span>()</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.fc1 <span class="op">=</span> torch.nn.Linear(state_dim, hidden_dim)</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.fc2 <span class="op">=</span> torch.nn.Linear(hidden_dim, action_dim)</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> forward(<span class="va">self</span>, x):</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> F.relu(<span class="va">self</span>.fc1(x))</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> F.softmax(<span class="va">self</span>.fc2(x), dim<span class="op">=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>A-C算法额外引入一个价值网络，接下来的代码定义价值网络<code>ValueNet</code>,其输入是某个状态，输出是状态的价值。</p>
+<div id="4c104e87" class="cell" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> ValueNet(torch.nn.Module):</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, state_dim, hidden_dim):</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>(ValueNet, <span class="va">self</span>).<span class="fu">__init__</span>()</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.fc1 <span class="op">=</span> torch.nn.Linear(state_dim, hidden_dim)</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.fc2 <span class="op">=</span> torch.nn.Linear(hidden_dim, <span class="dv">1</span>)</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> forward(<span class="va">self</span>, x):</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> F.relu(<span class="va">self</span>.fc1(x))</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.fc2(x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>现在定义<code>ActorCritic</code>算法，主要包含采取动作<code>take_action()</code>和更新网络参数<code>update()</code>两个函数。</p>
+<div id="641f6074" class="cell" data-execution_count="19">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> ActorCritic:</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, state_dim, hidden_dim, action_dim, actor_lr, critic_lr,</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>                 gamma, device):</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 策略网络</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.actor <span class="op">=</span> PolicyNet(state_dim, hidden_dim, action_dim).to(device)</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.critic <span class="op">=</span> ValueNet(state_dim, hidden_dim).to(device)  <span class="co"># 价值网络</span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 策略网络优化器</span></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.actor_optimizer <span class="op">=</span> torch.optim.Adam(<span class="va">self</span>.actor.parameters(),</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>                                                lr<span class="op">=</span>actor_lr)</span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.critic_optimizer <span class="op">=</span> torch.optim.Adam(<span class="va">self</span>.critic.parameters(),</span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>                                                 lr<span class="op">=</span>critic_lr)  <span class="co"># 价值网络优化器</span></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.gamma <span class="op">=</span> gamma</span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.device <span class="op">=</span> device</span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> take_action(<span class="va">self</span>, state):</span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>        <span class="co"># state = torch.tensor([state], dtype=torch.float).to(self.device)</span></span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>        state <span class="op">=</span> torch.tensor(np.array([state]), dtype<span class="op">=</span>torch.<span class="bu">float</span>).to(<span class="va">self</span>.device)</span>
+<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>        probs <span class="op">=</span> <span class="va">self</span>.actor(state)</span>
+<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a>        action_dist <span class="op">=</span> torch.distributions.Categorical(probs)</span>
+<span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a>        action <span class="op">=</span> action_dist.sample()</span>
+<span id="cb25-21"><a href="#cb25-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> action.item()</span>
+<span id="cb25-22"><a href="#cb25-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-23"><a href="#cb25-23" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> update(<span class="va">self</span>, transition_dict):</span>
+<span id="cb25-24"><a href="#cb25-24" aria-hidden="true" tabindex="-1"></a>        states <span class="op">=</span> torch.tensor(transition_dict[<span class="st">'states'</span>],</span>
+<span id="cb25-25"><a href="#cb25-25" aria-hidden="true" tabindex="-1"></a>                              dtype<span class="op">=</span>torch.<span class="bu">float</span>).to(<span class="va">self</span>.device)</span>
+<span id="cb25-26"><a href="#cb25-26" aria-hidden="true" tabindex="-1"></a>        actions <span class="op">=</span> torch.tensor(transition_dict[<span class="st">'actions'</span>]).view(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>).to(</span>
+<span id="cb25-27"><a href="#cb25-27" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.device)</span>
+<span id="cb25-28"><a href="#cb25-28" aria-hidden="true" tabindex="-1"></a>        rewards <span class="op">=</span> torch.tensor(transition_dict[<span class="st">'rewards'</span>],</span>
+<span id="cb25-29"><a href="#cb25-29" aria-hidden="true" tabindex="-1"></a>                               dtype<span class="op">=</span>torch.<span class="bu">float</span>).view(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>).to(<span class="va">self</span>.device)</span>
+<span id="cb25-30"><a href="#cb25-30" aria-hidden="true" tabindex="-1"></a>        next_states <span class="op">=</span> torch.tensor(transition_dict[<span class="st">'next_states'</span>],</span>
+<span id="cb25-31"><a href="#cb25-31" aria-hidden="true" tabindex="-1"></a>                                   dtype<span class="op">=</span>torch.<span class="bu">float</span>).to(<span class="va">self</span>.device)</span>
+<span id="cb25-32"><a href="#cb25-32" aria-hidden="true" tabindex="-1"></a>        dones <span class="op">=</span> torch.tensor(transition_dict[<span class="st">'dones'</span>],</span>
+<span id="cb25-33"><a href="#cb25-33" aria-hidden="true" tabindex="-1"></a>                             dtype<span class="op">=</span>torch.<span class="bu">float</span>).view(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>).to(<span class="va">self</span>.device)</span>
+<span id="cb25-34"><a href="#cb25-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-35"><a href="#cb25-35" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 时序差分目标</span></span>
+<span id="cb25-36"><a href="#cb25-36" aria-hidden="true" tabindex="-1"></a>        td_target <span class="op">=</span> rewards <span class="op">+</span> <span class="va">self</span>.gamma <span class="op">*</span> <span class="va">self</span>.critic(next_states) <span class="op">*</span> (<span class="dv">1</span> <span class="op">-</span></span>
+<span id="cb25-37"><a href="#cb25-37" aria-hidden="true" tabindex="-1"></a>                                                                       dones)</span>
+<span id="cb25-38"><a href="#cb25-38" aria-hidden="true" tabindex="-1"></a>        td_delta <span class="op">=</span> td_target <span class="op">-</span> <span class="va">self</span>.critic(states)  <span class="co"># 时序差分误差</span></span>
+<span id="cb25-39"><a href="#cb25-39" aria-hidden="true" tabindex="-1"></a>        log_probs <span class="op">=</span> torch.log(<span class="va">self</span>.actor(states).gather(<span class="dv">1</span>, actions))</span>
+<span id="cb25-40"><a href="#cb25-40" aria-hidden="true" tabindex="-1"></a>        actor_loss <span class="op">=</span> torch.mean(<span class="op">-</span>log_probs <span class="op">*</span> td_delta.detach())</span>
+<span id="cb25-41"><a href="#cb25-41" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 均方误差损失函数</span></span>
+<span id="cb25-42"><a href="#cb25-42" aria-hidden="true" tabindex="-1"></a>        critic_loss <span class="op">=</span> torch.mean(</span>
+<span id="cb25-43"><a href="#cb25-43" aria-hidden="true" tabindex="-1"></a>            F.mse_loss(<span class="va">self</span>.critic(states), td_target.detach()))</span>
+<span id="cb25-44"><a href="#cb25-44" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.actor_optimizer.zero_grad()</span>
+<span id="cb25-45"><a href="#cb25-45" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.critic_optimizer.zero_grad()</span>
+<span id="cb25-46"><a href="#cb25-46" aria-hidden="true" tabindex="-1"></a>        actor_loss.backward()  <span class="co"># 计算策略网络的梯度</span></span>
+<span id="cb25-47"><a href="#cb25-47" aria-hidden="true" tabindex="-1"></a>        critic_loss.backward()  <span class="co"># 计算价值网络的梯度</span></span>
+<span id="cb25-48"><a href="#cb25-48" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.actor_optimizer.step()  <span class="co"># 更新策略网络的参数</span></span>
+<span id="cb25-49"><a href="#cb25-49" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.critic_optimizer.step()  <span class="co"># 更新价值网络的参数</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>定义好Actor和Critic,我们就可以开始实验了，看看Actor-Critic在车杆环境下表现如何吧！ （下面的代码块执行时间会非常长，我暂时先不运行，只给出结果，代码是正确的）</p>
+<div id="3c117c40" class="cell" data-execution_count="20">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>actor_lr <span class="op">=</span> <span class="fl">1e-3</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>critic_lr <span class="op">=</span> <span class="fl">1e-2</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>num_episodes <span class="op">=</span> <span class="dv">1000</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>hidden_dim <span class="op">=</span> <span class="dv">128</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>gamma <span class="op">=</span> <span class="fl">0.98</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>device <span class="op">=</span> torch.device(<span class="st">"cuda"</span>) <span class="cf">if</span> torch.cuda.is_available() <span class="cf">else</span> torch.device(</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"cpu"</span>)</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>env_name <span class="op">=</span> <span class="st">'CartPole-v1'</span></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>env <span class="op">=</span> gym.make(env_name, render_mode<span class="op">=</span><span class="st">'human'</span>)</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>torch.manual_seed(<span class="dv">0</span>)</span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>state_dim <span class="op">=</span> env.observation_space.shape[<span class="dv">0</span>]</span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>action_dim <span class="op">=</span> env.action_space.n</span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>agent <span class="op">=</span> ActorCritic(state_dim, hidden_dim, action_dim, actor_lr, critic_lr,</span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>                    gamma, device)</span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a>return_list <span class="op">=</span> rl_utils.train_on_policy_agent(env, agent, num_episodes)</span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a>episodes_list <span class="op">=</span> <span class="bu">list</span>(<span class="bu">range</span>(<span class="bu">len</span>(return_list)))</span>
+<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a>plt.plot(episodes_list, return_list)</span>
+<span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Episodes'</span>)</span>
+<span id="cb26-23"><a href="#cb26-23" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Returns'</span>)</span>
+<span id="cb26-24"><a href="#cb26-24" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Actor-Critic on </span><span class="sc">{}</span><span class="st">'</span>.<span class="bu">format</span>(env_name))</span>
+<span id="cb26-25"><a href="#cb26-25" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb26-26"><a href="#cb26-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-27"><a href="#cb26-27" aria-hidden="true" tabindex="-1"></a>mv_return <span class="op">=</span> rl_utils.moving_average(return_list, <span class="dv">9</span>)</span>
+<span id="cb26-28"><a href="#cb26-28" aria-hidden="true" tabindex="-1"></a>plt.plot(episodes_list, mv_return)</span>
+<span id="cb26-29"><a href="#cb26-29" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Episodes'</span>)</span>
+<span id="cb26-30"><a href="#cb26-30" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Returns'</span>)</span>
+<span id="cb26-31"><a href="#cb26-31" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Actor-Critic on </span><span class="sc">{}</span><span class="st">'</span>.<span class="bu">format</span>(env_name))</span>
+<span id="cb26-32"><a href="#cb26-32" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://hrl.boyuai.com/static/qwal1jjhna.c77c3d82.png" class="img-fluid figure-img"></p>
+<figcaption>用Actor-Critic算法寻找CartPole最优策略的结果</figcaption>
+</figure>
+</div>
+<p>根据实验结果我们可以发现，Actor-Critic 算法很快便能收敛到最优策略，并且训练过程非常稳定，价值函数的引入减小了方差，抖动情况也不严重。</p>
+</section>
+<section id="小结-1" class="level2" data-number="7.5">
+<h2 data-number="7.5" class="anchored" data-anchor-id="小结-1"><span class="header-section-number">7.5</span> 小结</h2>
+<p>本章讲解了 Actor-Critic 算法，它是基于值函数的方法和基于策略的方法的叠加。价值模块 Critic 在策略模块 Actor 采样的数据中学习分辨什么是好的动作，什么不是好的动作，进而指导 Actor 进行策略更新。随着 Actor 的训练的进行，其与环境交互所产生的数据分布也发生改变，这需要 Critic 尽快适应新的数据分布并给出好的判别。</p>
+<p>Actor-Critic 算法非常实用，后续章节中的 TRPO、PPO、DDPG、SAC 等深度强化学习算法都是在 Actor-Critic 框架下进行发展的。深入了解 Actor-Critic 算法对读懂目前深度强化学习的研究热点大有裨益。</p>
+</section>
+</section>
+<section id="trpo-算法" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> TRPO 算法</h1>
+<section id="简介-5" class="level2" data-number="8.1">
+<h2 data-number="8.1" class="anchored" data-anchor-id="简介-5"><span class="header-section-number">8.1</span> 简介</h2>
+<p>本书之前介绍的基于策略的方法包括策略梯度算法和Actor-Critic算法。这两种方法虽然简单直观，但在实际应用过程中会遇到训练不稳定的情况。回顾一下基于策略的方法：参数化智能体的策略，并设计衡量策略好坏的函数，通过梯度上升的方法来最大化这个目标函数使得策略最优。具体来说，假设<span class="math inline">\theta</span>表示策略<span class="math inline">\pi_{\theta}</span>的参数。定义<span class="math inline">J(\theta)=\mathbb{E}_{\s_0}\left[V^{\pi_\theta}(s_0)\right]=\mathbb{E}_{\pi_{\theta}}\left[ \sum_{t=0}^{\infty}\gamma^tr(s_t,a_t) \right]</span>,基于策略的方法的目标是找到<span class="math inline">\theta^*=\arg\max_\thetaJ(\theta),</span>策略梯度算法主要沿着<span class="math inline">\nabla_{\theta}J(\theta)</span>方向迭代更新策略参数<span class="math inline">\theta.</span>但是这种算法有一个明显的缺点：当策略网络是深度模型时，沿着策略梯度更新参数，很有可能由于步长太长，策略突然显著变差，进而影响训练效果。</p>
+<p>针对以上问题，我们考虑在更新时找到一块<strong>信任区域</strong>（trust region），在这个区域上更新策略时能够得到某种策略性能的安全性保证，这就是<strong>信任区域策略优化</strong>（trust region policy optimization，TRPO）算法的主要思想。TRPO 算法在 2015 年被提出，它在理论上能够保证策略学习的性能单调性，并在实际应用中取得了比策略梯度算法更好的效果。</p>
+</section>
+<section id="策略目标" class="level2" data-number="8.2">
+<h2 data-number="8.2" class="anchored" data-anchor-id="策略目标"><span class="header-section-number">8.2</span> 策略目标</h2>
+<p>假设当前策略为<span class="math inline">\pi_{\theta},</span>参数为<span class="math inline">\theta.</span>我们考虑如何借助当前的<span class="math inline">\theta</span>找到一个更优秀的<span class="math inline">\theta'</span>,是的<span class="math inline">J(\theta')&gt;J(\theta).</span></p>
 
 
 </section>
@@ -1644,6 +2014,38 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
+    <script type="text/javascript">
+    (function(d) {
+      d.querySelectorAll(".pseudocode-container").forEach(function(el) {
+        let pseudocodeOptions = {
+          indentSize: el.dataset.indentSize || "1.2em",
+          commentDelimiter: el.dataset.commentDelimiter || "//",
+          lineNumber: el.dataset.lineNumber === "true" ? true : false,
+          lineNumberPunc: el.dataset.lineNumberPunc || ":",
+          noEnd: el.dataset.noEnd === "true" ? true : false,
+          titlePrefix: el.dataset.captionPrefix || "Algorithm"
+        };
+        pseudocode.renderElement(el.querySelector(".pseudocode"), pseudocodeOptions);
+      });
+    })(document);
+    (function(d) {
+      d.querySelectorAll(".pseudocode-container").forEach(function(el) {
+        let captionSpan = el.querySelector(".ps-root > .ps-algorithm > .ps-line > .ps-keyword")
+        if (captionSpan !== null) {
+          let captionPrefix = el.dataset.captionPrefix + " ";
+          let captionNumber = "";
+          if (el.dataset.pseudocodeNumber) {
+            captionNumber = el.dataset.pseudocodeNumber + " ";
+            if (el.dataset.chapterLevel) {
+              captionNumber = el.dataset.chapterLevel + "." + captionNumber;
+            }
+          }
+          captionSpan.innerHTML = captionPrefix + captionNumber;
+        }
+      });
+    })(document);
+    </script>
+  
 
 
 
