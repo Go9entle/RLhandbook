@@ -73,7 +73,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-74d526360349614d085bfedd2de7155a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-eeb6d1c97efeeb0cfaf56837413d2c8e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script src="site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.js"></script>
 <link href="site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
@@ -236,7 +236,7 @@ window.Quarto = {
       <div>
       <div class="quarto-title-meta-heading">Modified</div>
       <div class="quarto-title-meta-contents">
-        <p class="date-modified">Jul 13, 2025</p>
+        <p class="date-modified">Jul 16, 2025</p>
       </div>
     </div>
       
@@ -387,33 +387,34 @@ window.Quarto = {
 <p>在一个MRP中，从第<span class="math inline">t</span>时刻状态<span class="math inline">S_t</span>开始，直到终止状态时，所有奖励的衰减之和称为<strong>回报</strong><span class="math inline">G_t</span>（Return），公式如下：</p>
 <p><span class="math display">
 G_t=R_t+\gamma R_{t+1}+\gamma^2 R_{t+2}+\dots=\sum_{k=0}^{\infty}\gamma^k R_{t+k},
-</span> 其中，<span class="math inline">R_t</span>表示在时刻<span class="math inline">t</span>获得的奖励。</p>
+</span></p>
+<p>其中，<span class="math inline">R_t</span>表示在时刻<span class="math inline">t</span>获得的奖励。</p>
 </section>
 <section id="价值函数" class="level3" data-number="1.1.2">
 <h3 data-number="1.1.2" class="anchored" data-anchor-id="价值函数"><span class="header-section-number">1.1.2</span> 价值函数</h3>
 <p>在MRP中，一个状态的期望回报（即从这个状态出发的未来累积奖励的期望）被称为这个状态的<strong>价值</strong>（Value）。所有状态的价值就组成了<strong>价值函数</strong>（Value function），价值函数的输入为某个状态，输出为这个状态的价值。我们将价值函数写成</p>
 <p><span class="math display">
-\begin{aligned}
+\begin{align}
 V(s)&amp;=\mathbb{E}\left[G_t\mid S_t=s\right]\\
 &amp;= \mathbb{E}\left[ R_t+\gamma R_{t+1}+\gamma^2 R_{t+2} +\dots\mid S_t=s\right]\\
 &amp;=\mathbb{E}\left[ R_t+\gamma (R_{t+1}+\gamma R_{t+2} +\dots)\mid S_t=s\right]\\
 &amp;=\mathbb{E}\left[ R_t+\gamma G_{t+1}\mid S_t=s \right]\\
 &amp;=\mathbb{E}\left[ R_t+\gamma V(S_{t+1})\mid S_t=s \right]
-\end{aligned}
+\end{align}
 </span></p>
 <p>在上式的最后一个等号中，一方面，即时奖励的期望正是奖励函数的输出，即<span class="math inline">\mathbb{E}\left[ R_t\mid S_t=s \right]=r(s);</span>另一方面，等式中剩余部分<span class="math inline">\mathbb{E}\left[\gamma V(S_{t+1})\mid S_t=s\right]</span>可以根据从状态<span class="math inline">s</span>出发的转移概率得到，即</p>
 <p><span class="math display">
 V(s)=r(s)+\gamma \sum_{s'\in \mathcal{S}}p(s'\mid s)V(s')
 </span></p>
 <p>上式就是MRP中非常有名的<strong>贝尔曼方程</strong>（Bellman equation），对每一个状态都成立。若通过矩阵运算可以得到以下解析解：</p>
-<p><span class="math display">
-\begin{aligned}
+<p><span class="math display">\begin{align}
 \mathcal{V}&amp;=\mathcal{R}+\gamma\mathcal{P}\mathcal{V}\\
 \mathcal{V}&amp;=(I-\gamma\mathcal{P})^{-1}\mathcal{R}
-\end{aligned}
-</span> 其中<span class="math inline">\mathcal{V,R,P}</span>均为向量或矩阵。以上解析解的计算复杂度是<span class="math inline">O(n^3),</span>其中<span class="math inline">n</span>是状态个数，因此这种方法只适用于很小的MRP。求解较大规模的MRP奖励过程中的价值函数时，可以使用<strong>动态规划</strong>、<strong>蒙特卡洛</strong>、<strong>时序差分</strong>，这些方法将在之后的章节介绍。</p>
+\end{align}
+</span></p>
+<p>其中<span class="math inline">\mathcal{V,R,P}</span>均为向量或矩阵。以上解析解的计算复杂度是<span class="math inline">O(n^3)</span>,其中<span class="math inline">n</span>是状态个数，因此这种方法只适用于很小的MRP。求解较大规模的MRP奖励过程中的价值函数时，可以使用<strong>动态规划</strong>、<strong>蒙特卡洛</strong>、<strong>时序差分</strong>，这些方法将在之后的章节介绍。</p>
 <p>接下来编写代码来实现求解价值函数的解析解方法，并据此计算该马尔可夫奖励过程中所有状态的价值。</p>
-<div id="df3230e8" class="cell" data-execution_count="1">
+<div id="c26a25c0" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> compute(P, rewards, gamma, states_num):</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">''' 利用贝尔曼方程的矩阵形式计算解析解,states_num是MRP的状态数 '''</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    rewards <span class="op">=</span> np.array(rewards).reshape((<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>))  <span class="co">#将rewards写成列向量形式</span></span>
@@ -428,7 +429,7 @@ V(s)=r(s)+\gamma \sum_{s'\in \mathcal{S}}p(s'\mid s)V(s')
 <p>如果有一个外界的“刺激”来共同改变这个随机过程，就有了<strong>马尔可夫决策过程</strong>（MDP）。我们将这个来自外界的刺激称为<strong>智能体</strong>（Agent）的动作，在MRP的基础上加入动作，就得到了MDP。MDP有元组<span class="math inline">\langle \mathcal{S,A,P},r,\gamma\rangle</span>构成。</p>
 <section id="策略" class="level3" data-number="1.2.1">
 <h3 data-number="1.2.1" class="anchored" data-anchor-id="策略"><span class="header-section-number">1.2.1</span> 策略</h3>
-<p>智能体的<strong>策略</strong>（Policy）通常用字母<span class="math inline">\pi</span>表示。策略<span class="math inline">\pi(a|s)=P(A_t=a|S_t=s)</span>是一个函数，表示在输入状态<span class="math inline">s</span>情况下采取动作<span class="math inline">a</span>的概率。当一个策略是<strong>确定性策略</strong>（Deterministic policy）时，它在每个状态只输出一个确定性的动作，即只有该动作的概率为<span class="math inline">1</span>,其他动作的概率为<span class="math inline">0;</span> 当一个策略是<strong>随机性策略</strong>（Stochastic policy）时，它在每个状态时输出的是关于动作的概率分布，然后根据该分布进行采样就可以得到一个动作。</p>
+<p>智能体的<strong>策略</strong>（Policy）通常用字母<span class="math inline">\pi</span>表示。策略<span class="math inline">\pi(a|s)=P(A_t=a|S_t=s)</span>是一个函数，表示在输入状态<span class="math inline">s</span>情况下采取动作<span class="math inline">a</span>的概率。当一个策略是<strong>确定性策略</strong>（Deterministic policy）时，它在每个状态只输出一个确定性的动作，即只有该动作的概率为<span class="math inline">1</span>,其他动作的概率为<span class="math inline">0</span>; 当一个策略是<strong>随机性策略</strong>（Stochastic policy）时，它在每个状态时输出的是关于动作的概率分布，然后根据该分布进行采样就可以得到一个动作。</p>
 <p>在 MDP 中，由于马尔可夫性质的存在，策略只需要与当前状态有关，不需要考虑历史状态。回顾一下在 MRP 中的价值函数，在 MDP 中也同样可以定义类似的价值函数。但此时的价值函数与策略有关，这意为着对于两个不同的策略来说，它们在同一个状态下的价值也很可能是不同的。这很好理解，因为不同的策略会采取不同的动作，从而之后会遇到不同的状态，以及获得不同的奖励，所以它们的累积奖励的期望也就不同，即状态价值不同。</p>
 </section>
 <section id="状态价值函数" class="level3" data-number="1.2.2">
@@ -457,7 +458,7 @@ Q^{\pi}(s,a)=r(s,a)+\gamma\sum_{s'\in\mathcal{S}}P(s'|s,a)V^{\pi}(s')
 <section id="贝尔曼期望方程" class="level3" data-number="1.2.4">
 <h3 data-number="1.2.4" class="anchored" data-anchor-id="贝尔曼期望方程"><span class="header-section-number">1.2.4</span> 贝尔曼期望方程</h3>
 <p>在贝尔曼方程中加上期望二字是为了与接下来的贝尔曼最优方程进行区分。我们通过加单推到就可以分别得到两个价值函数的<strong>贝尔曼期望方程</strong>（Bellman Expect Equation）：</p>
-<p><span class="math display">
+<p><span class="math display">\begin{equation*}
 \begin{aligned}
 V^{\pi}(s)&amp;=\mathbb{E}_{\pi}\left[R_t+\gamma V^{\pi}(S_{t+1})|S_t=s\right]\\
 &amp;=\sum_{a\in\mathcal{A}}\pi(a|s)\left( r(s,a)+\gamma\sum_{s'\in\mathcal{S}}p(s'|s,a)V^{\pi}(s')\right)\\
@@ -465,7 +466,7 @@ V^{\pi}(s)&amp;=\mathbb{E}_{\pi}\left[R_t+\gamma V^{\pi}(S_{t+1})|S_t=s\right]\\
 Q^{\pi}(s,a)&amp;=\mathbb{E}_{\pi}\left[R_t+\gamma Q^{\pi}(S_{t+1},A_{t+1}|S_t=s, A_t=a)\right]\\
 &amp;=r(s,a)+\gamma\sum_{s'\in\mathcal{S}}p(s'|s,a)\sum_{a'\in\mathcal{A}}\pi(a'|s')Q^{\pi}(s',a)
 \end{aligned}
-</span></p>
+\end{equation*}</span></p>
 <p>价值函数和贝尔曼方程是强化学习非常重要的组成部分，之后的一些强化学习算法都是据此推导出来的。</p>
 <p>现在我们考虑一个MDP的简单例子如 <a href="#fig-mdp" class="quarto-xref">图&nbsp;1</a> ，其中每个绿色圆圈代表一个状态，一共有<span class="math inline">s_1\sim s_5</span>这5个状态。黑色实线箭头代表可以采取的动作，黄色小圆圈代表动作。需要注意的是，并非在每个状态都能采取所有动作，例如在<span class="math inline">s_1,</span>智能体只能采取”保持<span class="math inline">s_1</span>“和”前往<span class="math inline">s_2</span>“这两个动作，无法采取其他动作。</p>
 <p>每个黄色小圆圈旁的红色数字代表在某个状态下采取某个动作能获得的奖励。虚线箭头代表采取动作后可能转移到的状态，箭头边上的带方框的数字代表转移概率，如果没有数字则表示转移概率为1.例如，在<span class="math inline">s_2</span>下，如果采取动作”前往<span class="math inline">s_3</span>“就能得到奖励<span class="math inline">-2,</span>并且以概率1转移到<span class="math inline">s_3</span>;在<span class="math inline">s_4</span>下，如果采取”概率前往”这个动作，就能得到奖励<span class="math inline">1</span>,并且会分别以概率<span class="math inline">0.2,0.4,0.4</span>转移到<span class="math inline">s_2,s_3</span>或<span class="math inline">s_4</span>.</p>
@@ -480,7 +481,7 @@ Q^{\pi}(s,a)&amp;=\mathbb{E}_{\pi}\left[R_t+\gamma Q^{\pi}(S_{t+1},A_{t+1}|S_t=s
 </figure>
 </div>
 <p>接下来我们编写代码来表示 <a href="#fig-mdp" class="quarto-xref">图&nbsp;1</a> 中的MDP，并定义两个策略，第一个策略是一个完全随机策略，即在每个状态下，智能体会以同样的概率选取它可能采取的动作。例如，在<span class="math inline">s_1</span>下智能体会以<span class="math inline">0.5,0.5</span>的概率选取动作”保持<span class="math inline">s_1</span>“和”前往<span class="math inline">s_2</span>“.第二个策略是一个提前设定的策略。</p>
-<div id="8e6b195a" class="cell" data-execution_count="2">
+<div id="a19fa4d4" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>S <span class="op">=</span> [<span class="st">"s1"</span>, <span class="st">"s2"</span>, <span class="st">"s3"</span>, <span class="st">"s4"</span>, <span class="st">"s5"</span>]  <span class="co"># 状态集合</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> [<span class="st">"保持s1"</span>, <span class="st">"前往s1"</span>, <span class="st">"前往s2"</span>, <span class="st">"前往s3"</span>, <span class="st">"前往s4"</span>, <span class="st">"前往s5"</span>, <span class="st">"概率前往"</span>]  <span class="co"># 动作集合</span></span>
@@ -548,7 +549,7 @@ P'(s'|s)=\sum_{a\in\mathcal{A}}\pi(a|s)
 </span></p>
 <p>于是，我们构建得到了一个MRP:<span class="math inline">\langle \mathcal{S},P',r',\gamma\rangle</span>.根据价值函数的定义可以发现，转化前的 MDP 的状态价值函数和转化后的 MRP 的价值函数是一样的。于是我们可以用 MRP 中计算价值函数的解析解来计算这个 MDP 中该策略的状态价值函数。</p>
 <p>接下来，我们用代码实现该方法，计算用随即策略<code>Pi_1</code>时的状态价值函数，为了简单起见，我们将直接给出转化后的MRP的状态转移矩阵和奖励函数。</p>
-<div id="32fb5284" class="cell" data-execution_count="3">
+<div id="e7a5938e" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>gamma <span class="op">=</span> <span class="fl">0.5</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 转化后的MRP的状态转移矩阵</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>P_from_mdp_to_mrp <span class="op">=</span> [</span>
@@ -605,7 +606,7 @@ s_2^{(i)}\overset{a_2^{(i)}}{\rightarrow},...,\overset{a_{T-1}^{(i)}}{\rightarro
 <li><span class="math inline">V(s)\leftarrow V(s)+\frac{G-V(s)}{N(s)}</span></li>
 </ul>
 <p>接下来我们用代码定义一个采样函数，采样函数需要遵守状态转移矩阵和相应策略，每次将<code>(s,a,r,s_next)</code>元组放入序列中，直到到达终止序列。然后我们通过该函数，用随即策略在 <a href="#fig-mdp" class="quarto-xref">图&nbsp;1</a> 的MDP中随机采样几条序列。</p>
-<div id="17310c80" class="cell" data-execution_count="4">
+<div id="9ea09538" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> sample(MDP, Pi, timestep_max, number):</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">''' 采样函数,策略Pi,限制最长时间步timestep_max,总共采样序列数number '''</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    S, A, P, R, gamma <span class="op">=</span> MDP</span>
@@ -645,14 +646,14 @@ s_2^{(i)}\overset{a_2^{(i)}}{\rightarrow},...,\overset{a_{T-1}^{(i)}}{\rightarro
 <span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'第五条序列</span><span class="ch">\n</span><span class="st">'</span>, episodes[<span class="dv">4</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>第一条序列
- [('s2', '前往s1', -1, 's1'), ('s1', '前往s2', 0, 's2'), ('s2', '前往s3', -2, 's3'), ('s3', '前往s5', 0, 's5')]
+ [('s1', '保持s1', -1, 's1'), ('s1', '保持s1', -1, 's1'), ('s1', '保持s1', -1, 's1'), ('s1', '前往s2', 0, 's2'), ('s2', '前往s1', -1, 's1'), ('s1', '保持s1', -1, 's1'), ('s1', '前往s2', 0, 's2'), ('s2', '前往s1', -1, 's1'), ('s1', '前往s2', 0, 's2'), ('s2', '前往s1', -1, 's1'), ('s1', '前往s2', 0, 's2'), ('s2', '前往s3', -2, 's3'), ('s3', '前往s5', 0, 's5')]
 第二条序列
- [('s2', '前往s1', -1, 's1'), ('s1', '前往s2', 0, 's2'), ('s2', '前往s3', -2, 's3'), ('s3', '前往s4', -2, 's4'), ('s4', '概率前往', 1, 's4'), ('s4', '概率前往', 1, 's3'), ('s3', '前往s5', 0, 's5')]
+ [('s2', '前往s1', -1, 's1'), ('s1', '前往s2', 0, 's2'), ('s2', '前往s1', -1, 's1'), ('s1', '前往s2', 0, 's2'), ('s2', '前往s3', -2, 's3'), ('s3', '前往s5', 0, 's5')]
 第五条序列
- [('s3', '前往s4', -2, 's4'), ('s4', '概率前往', 1, 's3'), ('s3', '前往s4', -2, 's4'), ('s4', '概率前往', 1, 's4'), ('s4', '前往s5', 10, 's5')]</code></pre>
+ [('s2', '前往s3', -2, 's3'), ('s3', '前往s4', -2, 's4'), ('s4', '前往s5', 10, 's5')]</code></pre>
 </div>
 </div>
-<div id="6abe61be" class="cell" data-execution_count="5">
+<div id="d42b77f5" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 对所有采样序列计算所有状态的价值</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> MC(episodes, V, N, gamma):</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> episode <span class="kw">in</span> episodes:</span>
@@ -674,7 +675,7 @@ s_2^{(i)}\overset{a_2^{(i)}}{\rightarrow},...,\overset{a_{T-1}^{(i)}}{\rightarro
 <span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"使用蒙特卡洛方法计算MDP的状态价值为</span><span class="ch">\n</span><span class="st">"</span>, V)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>使用蒙特卡洛方法计算MDP的状态价值为
- {'s1': -1.2433556502656373, 's2': -1.6687838281541936, 's3': 0.5172596878892808, 's4': 6.24924512869253, 's5': 0}</code></pre>
+ {'s1': -1.215372808835918, 's2': -1.6710694368849406, 's3': 0.5488828010672508, 's4': 6.0933701596667325, 's5': 0}</code></pre>
 </div>
 </div>
 <p>可以看到用蒙特卡洛方法估计得到的状态价值和我们用 MRP 解析解得到的状态价值是很接近的。这得益于我们采样了比较多的序列，感兴趣的读者可以尝试修改采样次数，然后观察蒙特卡洛方法的结果。</p>
@@ -762,7 +763,7 @@ Q(s_t,a_t)\leftarrow Q(s_t,a_t)+\alpha\left[ R_t+\gamma Q(s_{t+1},a_{t+1})-Q(s_t
 </span></p>
 <p>现在，我们就可以得到一个实际的基于时序差分方法的强化学习算法。这个算法被称为 Sarsa，因为它的动作价值更新用到了当前状态<span class="math inline">s</span>、当前动作<span class="math inline">a</span>、获得的奖励<span class="math inline">r</span>、下一个状态<span class="math inline">s'</span>和下一个动作<span class="math inline">a'</span>,将这些符号拼接后就得到了算法名称，这是一种On-Policy(在线策略，<span class="math inline">a_{t+1}</span>和<span class="math inline">a_t</span>来自于同一策略)的时序差分强化学习算法。</p>
 <p>现在我们在悬崖漫步环境下尝试Sarsa算法。首先给出悬崖漫步环境的代码，此时环境不需要提供奖励函数和状态转移函数，而是需要提供一个和智能体进行交互的函数<code>step()</code>,该函数将智能体的动作作为输入，将奖励和下一个状态输出给智能体。</p>
-<div id="f9d8d0dd" class="cell" data-execution_count="6">
+<div id="4976b465" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tqdm <span class="im">import</span> tqdm  <span class="co"># tqdm是显示循环进度条的库</span></span>
@@ -796,7 +797,7 @@ Q(s_t,a_t)\leftarrow Q(s_t,a_t)+\alpha\left[ R_t+\gamma Q(s_{t+1},a_{t+1})-Q(s_t
 <span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.y <span class="op">*</span> <span class="va">self</span>.ncol <span class="op">+</span> <span class="va">self</span>.x</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>然后我们来实现Sarsa算法，主要维护一个表格<code>Q_table()</code>,用来存储当前策略下所有状态动作对的价值，在用Sarsa算法和环境交互时，用<span class="math inline">\epsilon-</span>贪婪策略进行采样，在更新Sarsa算法时，使用时序差分的公式。我们默认终止状态时所有动作的价值都是<span class="math inline">0</span>,这些价值在初始化为<span class="math inline">0</span>后就不会进行更新。</p>
-<div id="9c4c552e" class="cell" data-execution_count="7">
+<div id="8f32b093" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Sarsa:</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">""" Sarsa算法 """</span></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, ncol, nrow, epsilon, alpha, gamma, n_action<span class="op">=</span><span class="dv">4</span>):</span>
@@ -826,7 +827,7 @@ Q(s_t,a_t)\leftarrow Q(s_t,a_t)+\alpha\left[ R_t+\gamma Q(s_{t+1},a_{t+1})-Q(s_t
 <span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.Q_table[s0, a0] <span class="op">+=</span> <span class="va">self</span>.alpha <span class="op">*</span> td_error</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>接下来我们就在悬崖漫步环境中运行Sarsa算法，一起来看看结果吧！</p>
-<div id="2b450f78" class="cell" data-execution_count="8">
+<div id="9eb3ca6d" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>ncol <span class="op">=</span> <span class="dv">12</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>nrow <span class="op">=</span> <span class="dv">4</span></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>env <span class="op">=</span> CliffWalkingEnv(ncol, nrow)</span>
@@ -878,7 +879,7 @@ Q(s_t,a_t)\leftarrow Q(s_t,a_t)+\alpha\left[ R_t+\gamma Q(s_{t+1},a_{t+1})-Q(s_t
 </div>
 </div>
 <p>我们发现，随着训练的进行，Sarsa 算法获得的回报越来越高。在进行 500 条序列的学习后，可以获得 −20 左右的回报，此时已经非常接近最优策略了。然后我们看一下 Sarsa 算法得到的策略在各个状态下会使智能体采取什么样的动作。</p>
-<div id="6e355ed1" class="cell" data-execution_count="9">
+<div id="b456fa36" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> print_agent(agent, env, action_meaning, disaster<span class="op">=</span>[], end<span class="op">=</span>[]):</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(env.nrow):</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(env.ncol):</span>
@@ -917,7 +918,7 @@ G_t=R_t+\gamma R_{t+1}+\dots+\gamma^{n-1}R_{t+n-1}+\gamma^n Q(s_{t+n},a_{t+n})
 </span> 于是Sarsa算法中的动作价值函数更新公式变为 <span class="math display">
 Q(s_t,a_t)\leftarrow Q(s_t,a_t)+\alpha\left[ R_t+\gamma R_{t+1}+\dots+\gamma^{n-1}R_{t+n-1}+\gamma^n Q(s_{t+n},a_{t+n})-Q(s_t,a_t) \right]
 </span> 接下来将用代码实现<span class="math inline">n</span>步Sarsa算法，在Sarsa代码基础上进行修改，引入多步时序差分计算。</p>
-<div id="fac43b32" class="cell" data-execution_count="10">
+<div id="a8ea6c3c" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> nstep_Sarsa:</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">""" n步Sarsa算法 """</span></span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, n, ncol, nrow, epsilon, alpha, gamma, n_action<span class="op">=</span><span class="dv">4</span>):</span>
@@ -969,7 +970,7 @@ Q(s_t,a_t)\leftarrow Q(s_t,a_t)+\alpha\left[ R_t+\gamma R_{t+1}+\dots+\gamma^{n-
 <span id="cb14-49"><a href="#cb14-49" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.action_list <span class="op">=</span> []</span>
 <span id="cb14-50"><a href="#cb14-50" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.reward_list <span class="op">=</span> []</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="5994d347" class="cell" data-execution_count="11">
+<div id="2a2c079b" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">0</span>)</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>n_step <span class="op">=</span> <span class="dv">5</span>  <span class="co"># 5步Sarsa算法</span></span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>alpha <span class="op">=</span> <span class="fl">0.1</span></span>
@@ -1020,7 +1021,7 @@ Q(s_t,a_t)\leftarrow Q(s_t,a_t)+\alpha\left[ R_t+\gamma R_{t+1}+\dots+\gamma^{n-
 </div>
 </div>
 <p>通过实验结果可以发现，<span class="math inline">5</span>步Sarsa算法的收敛速度比单步Sarsa算法更快，我们看下此时的策略表现。</p>
-<div id="5febf163" class="cell" data-execution_count="12">
+<div id="e54a6a7a" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>action_meaning <span class="op">=</span> [<span class="st">'^'</span>, <span class="st">'v'</span>, <span class="st">'&lt;'</span>, <span class="st">'&gt;'</span>]</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'5步Sarsa算法最终收敛得到的策略为：'</span>)</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>print_agent(agent, env, action_meaning, <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">37</span>, <span class="dv">47</span>)), [<span class="dv">47</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1059,7 +1060,7 @@ Q^*(s,a)=r(s,a)+\gamma \sum_{s'\in\mathcal{S}}P(s'|s,a)\max_{a'}Q^*(s',a')
 </div>
 <p>在之后的讲解中，我们会注明各个算法分别属于这两类中的哪一类。如前文所述，离线策略算法能够重复使用过往训练样本，往往具有更小的样本复杂度，也因此更受欢迎。</p>
 <p>我们接下来仍然在悬崖漫步环境下来实现 Q-learning 算法。</p>
-<div id="4c6ca46f" class="cell" data-execution_count="13">
+<div id="74a7da78" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> QLearning:</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">""" Q-learning算法 """</span></span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, ncol, nrow, epsilon, alpha, gamma, n_action<span class="op">=</span><span class="dv">4</span>):</span>
@@ -1089,7 +1090,7 @@ Q^*(s,a)=r(s,a)+\gamma \sum_{s'\in\mathcal{S}}P(s'|s,a)\max_{a'}Q^*(s',a')
 <span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>        ) <span class="op">-</span> <span class="va">self</span>.Q_table[s0, a0]</span>
 <span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.Q_table[s0, a0] <span class="op">+=</span> <span class="va">self</span>.alpha <span class="op">*</span> td_error</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="1c2a115d" class="cell" data-execution_count="14">
+<div id="9fb976de" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">0</span>)</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>epsilon <span class="op">=</span> <span class="fl">0.1</span></span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>alpha <span class="op">=</span> <span class="fl">0.1</span></span>
@@ -1250,7 +1251,7 @@ Q(s,a)\leftarrow Q(s,a)+\alpha\left[ r+\gamma \max_{a'\in\mathcal{A}}Q(s',a')-Q(
 </ol>
 <p>如果两套网络中的参数随时保持一致，则仍为原先不够稳定的算法。为了让更新目标更稳定，目标网络并不会每一步都更新。具体而言，目标网络使用训练网络的一套旧的参数，训练网络<span class="math inline">Q_{\omega}(s,a)</span>在训练中的每一步都会更新，而目标网络的参数每隔<span class="math inline">C</span>步才会与训练网络同步一次，即<span class="math inline">\omega^-\leftarrow\omega.</span> 这样做使得目标网络相对于训练网络更加稳定。</p>
 <p>综上所述，DQN算法的具体流程如下：</p>
-<div class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-line-number="true" data-no-end="false" data-pseudocode-number="1" data-comment-delimiter="//" data-indent-size="1.2em" data-line-number-punc=":">
+<div class="pseudocode-container quarto-float" data-line-number-punc=":" data-pseudocode-number="1" data-comment-delimiter="//" data-no-end="false" data-caption-prefix="Algorithm" data-line-number="true" data-indent-size="1.2em">
 <div class="pseudocode">
 \begin{algorithm} \caption{DQN算法流程} \begin{algorithmic} \State 用随机的网络参数$\omega$初始化网络$Q_{\omega}(s,a)$ \State 复制相同的参数$\omega_^-\leftarrow\omega$初始化目标网络$Q_{\omega^-}$ \State 初始化经验放回池$R$ \For{$e=1\rightarrow E$} \State 获取环境初始状态$s_1$ \For{时间步$t=1\rightarrow T$} \State 根据当前网络$Q_{\omega}(s,a)$以$\epsilon$-贪婪策略选择动作$a_t$ \State 执行动作$a_t,$获得奖励$r_t,$环境状态变为$s_{t+1}$ \State 将$(s_t,a_t,r_t,s_{t+1})$存储进回放池$R$ \State 若$R$中数据足够，从$R$中采样$N$个数据$\{(s_i,a_i,r_i,s_{i+1})\}_{i=1,...,N}$ \State 对每个元组，用目标网络计算 $y_i=r_i+\gamma \max_{a}Q_{\omega^-}(s_{i+1},a)$ \State 最小化目标损失 $L=\frac{1}{N}\sum_{i=1}^N(y_i-Q_{\omega}(s_i,a_i))^2$ 以此更新当前网咯$Q_{\omega}$ \State 更新目标网络 \EndFor \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -1260,7 +1261,7 @@ Q(s,a)\leftarrow Q(s,a)+\alpha\left[ r+\gamma \max_{a'\in\mathcal{A}}Q(s',a')-Q(
 <section id="dqn代码实践" class="level2" data-number="5.3">
 <h2 data-number="5.3" class="anchored" data-anchor-id="dqn代码实践"><span class="header-section-number">5.3</span> DQN代码实践</h2>
 <p>引入相应的包后定义经验回放池的类，主要包括加入数据、采样数据两大函数。</p>
-<div id="5d65c61a" class="cell" data-execution_count="15">
+<div id="56a1c62b" class="cell" data-execution_count="15">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> random</span>
@@ -1290,7 +1291,7 @@ Q(s,a)\leftarrow Q(s,a)+\alpha\left[ r+\gamma \max_{a'\in\mathcal{A}}Q(s',a')-Q(
 </details>
 </div>
 <p>然后定义一个只有一层隐藏层的Q网络</p>
-<div id="52109700" class="cell" data-execution_count="16">
+<div id="577cda7c" class="cell" data-execution_count="16">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Qnet(torch.nn.Module):</span>
@@ -1306,7 +1307,7 @@ Q(s,a)\leftarrow Q(s,a)+\alpha\left[ r+\gamma \max_{a'\in\mathcal{A}}Q(s',a')-Q(
 </details>
 </div>
 <p>有了基本组件之后，开始实现DQN算法</p>
-<div id="461c4406" class="cell" data-execution_count="17">
+<div id="f96f3df8" class="cell" data-execution_count="17">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> DQN:</span>
@@ -1369,7 +1370,7 @@ Q(s,a)\leftarrow Q(s,a)+\alpha\left[ r+\gamma \max_{a'\in\mathcal{A}}Q(s',a')-Q(
 <section id="加入卷积层的dqn算法" class="level2" data-number="5.4">
 <h2 data-number="5.4" class="anchored" data-anchor-id="加入卷积层的dqn算法"><span class="header-section-number">5.4</span> 加入卷积层的DQN算法</h2>
 <p>让智能体和人一样玩游戏，我们需要让智能体学会以图像作为状态时的决策。我们可以利用 DQN 算法，将卷积层加入其网络结构以提取图像特征，最终实现以图像为输入的强化学习。以图像为输入的 DQN 算法的代码与 7.4 节的代码的不同之处主要在于 Q 网络的结构和数据输入。DQN 网络通常会将最近的几帧图像一起作为输入，从而感知环境的动态性。接下来我们实现以图像为输入的 DQN 算法，但由于代码需要运行较长的时间，我们在此便不展示训练结果。</p>
-<div id="5c10003c" class="cell" data-execution_count="18">
+<div id="457b5d5e" class="cell" data-execution_count="18">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> ConvolutionalQnet(torch.nn.Module):</span>
@@ -1408,7 +1409,7 @@ Q(s,a)\leftarrow Q(s,a)+\alpha\left[ r+\gamma \max_{a'\in\mathcal{A}}Q(s',a')-Q(
 <p>普通的DQN算法通常会导致对<span class="math inline">Q</span>值的过高估计。传统DQN优化的TD误差目标为</p>
 <p><span class="math display">
 r+\gamma\max_{a'}Q_{\omega^-}(s',a')
-</span> 其中<span class="math inline">\max_{a'}Q_{\omega^-}(s',a')</span>是由参数为<span class="math inline">\omgea^-</span>的目标网络计算得出，我们还可以将其改写为如下形式</p>
+</span> 其中<span class="math inline">\max_{a'}Q_{\omega^-}(s',a')</span>是由参数为<span class="math inline">\omega^-</span>的目标网络计算得出，我们还可以将其改写为如下形式</p>
 <p><span class="math display">
 Q_{\omega^-}\left(s,\arg\max_{a'}Q_{\omega^-}(s',a')\right)
 </span></p>
@@ -1432,7 +1433,7 @@ r+\gamma Q_{\omega^-}\left(s,\arg\max_{a'}Q_{\omega}(s',a')\right)
 </span> 动作的选取依靠训练网络<span class="math inline">Q_{\omega}</span>.</p></li>
 </ul>
 <p>所以 Double DQN 的代码实现可以直接在 DQN 的基础上进行，无须做过多修改。</p>
-<div id="42bf5f07" class="cell" data-execution_count="19">
+<div id="9ebbfb8e" class="cell" data-execution_count="19">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> DQN:</span>
@@ -1531,7 +1532,7 @@ Q_{\eta,\alpha,\beta}(s,a)=V_{\eta,\alpha}(s)+A_{\eta,\beta}(s,a)-\frac{1}{|\mat
 <section id="dueling-dqn-代码实践" class="level2" data-number="6.5">
 <h2 data-number="6.5" class="anchored" data-anchor-id="dueling-dqn-代码实践"><span class="header-section-number">6.5</span> Dueling DQN 代码实践</h2>
 <p>Dueling DQN 与 DQN 相比的差异只是在网络结构上，大部分代码依然可以继续沿用。我们定义状态价值函数和优势函数的复合神经网络<code>VAnet</code>。</p>
-<div id="75243492" class="cell" data-execution_count="20">
+<div id="6b9d99fe" class="cell" data-execution_count="20">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> VAnet(torch.nn.Module):</span>
@@ -1671,13 +1672,13 @@ Q_{\eta,\alpha,\beta}(s,a)=V_{\eta,\alpha}(s)+A_{\eta,\beta}(s,a)-\frac{1}{|\mat
 <p><span class="math display">
 J(\theta)=\mathbb{E}_{s_0}[V^{\pi_\theta}(s_0)]
 </span> 其中<span class="math inline">s_0</span>表示初始状态。现在有了目标函数，我们将目标函数对策略<span class="math inline">\theta</span>求导，得到导数后，就可以用梯度上升方法来最大化这个目标函数从而得到最优策略。</p>
-<p><span class="math display">
-\begin{aligned}
+<p><span class="math display">\begin{align}
 \nabla_\theta J(\theta)&amp;\propto \sum_{s\in\mathcal{S}}\nu^{\pi_\theta}(s)\sum_{a\in\mathcal{A}}Q^{\pi_\theta}(s,a)\nabla_\theta\pi_\theta(a|s)\\
 &amp;=\sum_{s\in\mathcal{S}}\nu^{\pi_\theta}(s)\sum_{a\in\mathcal{A}}\pi_\theta(a|s)Q^{\pi_\theta}(s,a)\frac{\nabla_\theta\pi_\theta(a|s)}{\pi_\theta(a|s)}\\
 &amp;=\mathbb{E}_{\pi_\theta}\left[ Q^{\pi_\theta}(s,a)\nabla_\theta\log\pi_\theta(a|s) \right]
-\end{aligned}
-</span> 其中<span class="math inline">\nu^\pi</span>使策略<span class="math inline">\pi</span>下的状态访问分布。</p>
+\end{align}
+</span></p>
+<p>其中<span class="math inline">\nu^\pi</span>使策略<span class="math inline">\pi</span>下的状态访问分布。</p>
 <p>上面的梯度可以用来更新策略。需要注意的是，因为上式中期望<span class="math inline">\mathbb{E}</span>的下标是<span class="math inline">\pi_\theta</span>，所以策略梯度算法为在线策略（on-policy）算法，即必须使用当前策略<span class="math inline">\pi_\theta</span>采样得到的数据来计算梯度。直观理解一下策略梯度这个公式，可以发现在每一个状态下，梯度的修改是让策略更多地去采样到带来较高<span class="math inline">Q</span>值的动作，更少地去采样到带来较低<span class="math inline">Q</span>值的动作。</p>
 <p>在计算策略梯度的公式中，需要用到<span class="math inline">Q^{\pi_\theta}(s,a),</span>可以用多种方法对它进行估计。接下来要介绍的REINFORCE算法便是采用了MC方法来估计<span class="math inline">Q^{\pi_\theta}(s,a),</span>对于一个有限步数的环境来说，REINFORCE算法中的策略梯度为： <span class="math display">
 \nabla_\theta J(\theta)=\mathbb{E}_{\pi_\theta}\left[ \sum_{t=0}^T\left( \sum_{t'=t}^T\gamma^{t'-t}r_{t'} \right)\nabla_\theta \log\pi_\theta(a_t|s_t) \right]
@@ -1686,7 +1687,7 @@ J(\theta)=\mathbb{E}_{s_0}[V^{\pi_\theta}(s_0)]
 <section id="reinforce" class="level2" data-number="7.3">
 <h2 data-number="7.3" class="anchored" data-anchor-id="reinforce"><span class="header-section-number">7.3</span> REINFORCE</h2>
 <p>REINFORCE算法的具体流程如下：</p>
-<div class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-line-number="true" data-no-end="false" data-pseudocode-number="1" data-comment-delimiter="//" data-indent-size="1.2em" data-line-number-punc=":">
+<div class="pseudocode-container quarto-float" data-line-number-punc=":" data-pseudocode-number="1" data-comment-delimiter="//" data-no-end="false" data-caption-prefix="Algorithm" data-line-number="true" data-indent-size="1.2em">
 <div class="pseudocode">
 \begin{algorithm} \caption{REINFORCE算法流程} \begin{algorithmic} \State 初始化策略参数$\theta$ \For{$e=1\rightarrow E$} \State 用当前策略$\pi_\theta$采样轨迹$\{s_1,a_1,r_1,s_2,a_2,r_2,...,s_T,a_T,r_T\}$ \State 计算当前轨迹每个时刻$t$往后的回报$\sum_{t'=t}^T\gamma^{t'-t}r_{t'},$记为$\psi_t$ \State 对$\theta$进行更新$\theta=\theta+\alpha\sum_{t}^T\psi_t\nabla_\theta\log\pi_\theta(a_t|s_t)$ \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -1695,7 +1696,7 @@ J(\theta)=\mathbb{E}_{s_0}[V^{\pi_\theta}(s_0)]
 <section id="reinforce-代码实践" class="level2" data-number="7.4">
 <h2 data-number="7.4" class="anchored" data-anchor-id="reinforce-代码实践"><span class="header-section-number">7.4</span> REINFORCE 代码实践</h2>
 <p>首先定义策略网络<code>PolicyNet</code>,其输入是某个状态，输出则是该状态下的动作概率分布，这里采用在离散动作空间上的 <code>softmax()</code>函数来实现一个可学习的多项分布（multinomial distribution）。</p>
-<div id="4748fbd8" class="cell" data-execution_count="21">
+<div id="ef8466f4" class="cell" data-execution_count="21">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> gym</span>
@@ -1717,7 +1718,7 @@ J(\theta)=\mathbb{E}_{s_0}[V^{\pi_\theta}(s_0)]
 </details>
 </div>
 <p>再定义REINFORCE算法。在<code>take_action()</code>函数中，我们通过动作概率分布对离散的动作进行采样。在更新过程中，我们按照算法将损失函数写为策略回报的负数，即<span class="math inline">-\sum_t\psi_t\nabla_\theta\log\pi_\theta(a_t|s_t)</span>,对<span class="math inline">\theta</span>求导后就可以通过梯度下降来更新策略。</p>
-<div id="be0ef116" class="cell" data-execution_count="22">
+<div id="f782640d" class="cell" data-execution_count="22">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> REINFORCE:</span>
@@ -1813,7 +1814,7 @@ g=\mathbb{E}\left[ \sum_{t=0}^T\psi_t\nabla_\theta\log\pi_\theta(a_t|s_t) \right
 </span> 与DQN中一样，我们采取类似与目标网络的方法，将上式中<span class="math inline">r+\gamma V_\omega(s_{t+1})</span>作为时序差分目标，不会产生梯度来更新价值函数，因此，价值函数的梯度为: <span class="math display">
 \nabla_\omega\mathcal{L}=-(r+\gamma V_\omega(s_{t+1})-V_\omega(s_t))\nabla_{\omega}V_\omega(s_t)
 </span> 然后使用梯度下降方法来更新Critic价值网络参数即可。</p>
-<div class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-line-number="true" data-no-end="false" data-pseudocode-number="1" data-comment-delimiter="//" data-indent-size="1.2em" data-line-number-punc=":">
+<div class="pseudocode-container quarto-float" data-line-number-punc=":" data-pseudocode-number="1" data-comment-delimiter="//" data-no-end="false" data-caption-prefix="Algorithm" data-line-number="true" data-indent-size="1.2em">
 <div class="pseudocode">
 \begin{algorithm} \caption{Actor-Critic算法流程} \begin{algorithmic} \State \textbf{初始化策略网络参数}$\theta$, \textbf{价值网络参数}$\omega$ \For{$e=1\rightarrow E$} \State \textbf{用当前策略}$\pi_{\theta}$\textbf{采样轨迹}$\{s_1,a_1,r_1,s_2,a_2,r_2,...\}$ \State \textbf{为每一步数据计算}$\delta_t=r_t+\gamma V_{\omega}(s_{t+1})-V_\omega(s_t)$ \State \textbf{更新价值参数}$\omega=\omega+\alpha_\omega\sum_t\delta_t\nabla_{\omega}V_\omega(s_t)$ \State \textbf{更新策略参数}$\theta=\theta+\alpha_\theta\sum_t\delta_t\nabla_{\theta}\log\pi_{\theta}(a_t|s_t)$ \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -1910,7 +1911,7 @@ g=\mathbb{E}\left[ \sum_{t=0}^T\psi_t\nabla_\theta\log\pi_\theta(a_t|s_t) \right
 <section id="actor-critic-代码实践" class="level2" data-number="8.4">
 <h2 data-number="8.4" class="anchored" data-anchor-id="actor-critic-代码实践"><span class="header-section-number">8.4</span> Actor-Critic 代码实践</h2>
 <p>我们想在车杆环境下进行A-C算法的实验，引入一些必要的包</p>
-<div id="8967ab91" class="cell" data-execution_count="23">
+<div id="3ae74d96" class="cell" data-execution_count="23">
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> gym</span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch <span class="im">import</span> nn</span>
@@ -1921,7 +1922,7 @@ g=\mathbb{E}\left[ \sum_{t=0}^T\psi_t\nabla_\theta\log\pi_\theta(a_t|s_t) \right
 <span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tqdm <span class="im">import</span> tqdm</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>其中<code>rl_utils</code>文件如下所示：</p>
-<div id="da0802e0" class="cell" data-execution_count="24">
+<div id="30de1beb" class="cell" data-execution_count="24">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tqdm <span class="im">import</span> tqdm</span>
@@ -2018,7 +2019,7 @@ g=\mathbb{E}\left[ \sum_{t=0}^T\psi_t\nabla_\theta\log\pi_\theta(a_t|s_t) \right
 </details>
 </div>
 <p>首先定义策略网络<code>PolicyNet</code>,其输入是某个状态，输出是该状态下的动作概率分布，这里采用在离散动作空间上的<code>softmax()</code>函数来实现一个可学习的<strong>多项分布</strong>。</p>
-<div id="7ea9185a" class="cell" data-execution_count="25">
+<div id="6d35408c" class="cell" data-execution_count="25">
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> PolicyNet(torch.nn.Module):</span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, state_dim, hidden_dim, action_dim):</span>
 <span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>(PolicyNet, <span class="va">self</span>).<span class="fu">__init__</span>()</span>
@@ -2030,7 +2031,7 @@ g=\mathbb{E}\left[ \sum_{t=0}^T\psi_t\nabla_\theta\log\pi_\theta(a_t|s_t) \right
 <span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> F.softmax(<span class="va">self</span>.fc2(x), dim<span class="op">=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>A-C算法额外引入一个价值网络，接下来的代码定义价值网络<code>ValueNet</code>,其输入是某个状态，输出是状态的价值。</p>
-<div id="c29ddd48" class="cell" data-execution_count="26">
+<div id="5c3171be" class="cell" data-execution_count="26">
 <div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> ValueNet(torch.nn.Module):</span>
 <span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, state_dim, hidden_dim):</span>
 <span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>(ValueNet, <span class="va">self</span>).<span class="fu">__init__</span>()</span>
@@ -2042,7 +2043,7 @@ g=\mathbb{E}\left[ \sum_{t=0}^T\psi_t\nabla_\theta\log\pi_\theta(a_t|s_t) \right
 <span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.fc2(x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>现在定义<code>ActorCritic</code>算法，主要包含采取动作<code>take_action()</code>和更新网络参数<code>update()</code>两个函数。</p>
-<div id="7e016dd6" class="cell" data-execution_count="27">
+<div id="623a0c5e" class="cell" data-execution_count="27">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> ActorCritic:</span>
@@ -2097,7 +2098,7 @@ g=\mathbb{E}\left[ \sum_{t=0}^T\psi_t\nabla_\theta\log\pi_\theta(a_t|s_t) \right
 </details>
 </div>
 <p>定义好Actor和Critic,我们就可以开始实验了，看看Actor-Critic在车杆环境下表现如何吧（下面的代码块执行时间会非常长，我暂时先不运行，只给出结果，代码是正确的）！</p>
-<div id="6d6d4952" class="cell" data-execution_count="28">
+<div id="97deb1c2" class="cell" data-execution_count="28">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>actor_lr <span class="op">=</span> <span class="fl">1e-3</span></span>
@@ -2231,7 +2232,7 @@ L_\theta(\theta')=J(\theta)+\frac{1}{1-\gamma}\mathbb{E}_{s\sim \nu^{\pi_{\theta
 \theta_{k+1}=\theta_k+\sqrt{\frac{2\delta}{x^\top Hx}}x
 </span></p>
 <p>因此，只要可以直接计算<span class="math inline">x=H^{-1}g,</span>就可以根据该式更新参数，问题转化为解<span class="math inline">Hx=g.</span>实际上<span class="math inline">H</span>为对称正定矩阵，所以我们可以使用共轭梯度法来求解。共轭梯度法的具体流程如下：</p>
-<div class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-line-number="true" data-no-end="false" data-pseudocode-number="1" data-comment-delimiter="//" data-indent-size="1.2em" data-line-number-punc=":">
+<div class="pseudocode-container quarto-float" data-line-number-punc=":" data-pseudocode-number="1" data-comment-delimiter="//" data-no-end="false" data-caption-prefix="Algorithm" data-line-number="true" data-indent-size="1.2em">
 <div class="pseudocode">
 \begin{algorithm} \caption{共轭梯度法流程} \begin{algorithmic} \State \textbf{初始化}$r_0=g-Hx_0,p_0=r_0,x_0=0$ \For{$k=0\rightarrow N$} \State $\alpha_k=\frac{r_k^\top r_k}{p_k^\top Hp_k}$ \State $x_{k+1}=x_k+\alpha_kp_k$ \State $r_{k+1}=r_k-\alpha_kHp_k$ \If{$r_{k+1}^\top r_{k+1}$\textbf{非常小}} \State \textbf{退出循环} \EndIf \State $\beta_k=\frac{r_{k+1}^\top r_{k+1}}{r_k^\top r_k}$ \State $p_{k+1}=r_{k+1}+\beta_kp_k$ \EndFor \State \textbf{输出}$x_{N+1}$ \end{algorithmic} \end{algorithm}
 </div>
@@ -2248,7 +2249,7 @@ Hv=\nabla_{\theta} \left(\left(\nabla_{\theta}(D^{\nu^{\pi_{\theta_k}}}_{KL}(\pi
 \theta_{k+1}=\theta_k+\alpha^i \sqrt{\frac{2\delta}{x^\top Hx}}x
 </span> 求出的<span class="math inline">\theta_{k+1}</span>依然满足最初的KL散度限制，并且确实能够提升目标函数<span class="math inline">L_{\theta_k}</span>,这其中<span class="math inline">\alpha\in(0,1)</span>是一个决定线性搜索长度的超参数。</p>
 <p>至此，我们已经基本清楚了TRPO算法的大致过程，具体算法流程如下：</p>
-<div class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-line-number="true" data-no-end="false" data-pseudocode-number="1" data-comment-delimiter="//" data-indent-size="1.2em" data-line-number-punc=":">
+<div class="pseudocode-container quarto-float" data-line-number-punc=":" data-pseudocode-number="1" data-comment-delimiter="//" data-no-end="false" data-caption-prefix="Algorithm" data-line-number="true" data-indent-size="1.2em">
 <div class="pseudocode">
 \begin{algorithm} \caption{TRPO算法流程} \begin{algorithmic} \State \textbf{初始化策略网络参数}$\theta,$\textbf{价值网络参数}$\omega$ \For{$e=1\rightarrow E$} \State \textbf{用当前策略}$\pi_{\theta}$\textbf{采样轨迹}$\{s_1,a_1,r_1,s_2,a_2,r_2,\dots\}$ \State \textbf{根据收集到的数据和价值网络估计每个状态动作对的优势}$A(s_t,a_t)$ \State \textbf{计算策略目标函数的梯度}$g$ \State \textbf{用共轭梯度法计算}$x=H^{-1}g$ \State \textbf{用线性搜索找到一个}$i$\textbf{值，并更新策略网络参数} \State $\theta_{k+1}=\theta_k+\alpha^i \sqrt{\frac{2\delta}{x^\top Hx}}x$,其中$i\in\{1,2,...,K\}$\textbf{为能提升策略并满足KL距离限制的最小整数} \State \textbf{更新价值网络参数（与A-C中的更新方法相同）} \EndFor \State \textbf{输出}$x_{N+1}$ \end{algorithmic} \end{algorithm}
 </div>
@@ -2276,7 +2277,7 @@ A_t^{GAE}&amp;=(1-\lambda)(A_t^{(1)}+\lambda A_t^{(2)}+\lambda^2 A_t^{(3)}+...)\
 \end{aligned}
 </span> 其中<span class="math inline">\lambda\in[0,1]</span>是在GAE中额外引入的一个超参数，当<span class="math inline">\lambda=0</span>时，<span class="math inline">A_t^{GAE}=\delta_t</span>即是仅仅只看一步差分得到的优势；当<span class="math inline">\lambda=1</span>时，<span class="math inline">A_t^{GAE}=\sum_{l=0}^{\infty}\gamma^l\delta_{t+l}=\sum_{l=0}^{\infty}\gamma^lr_{t+l}-V(s_t),</span>则是看每一步差分得到优势的完全平均值。</p>
 <p>下面是一段GAE代码，给定<span class="math inline">\gamma,\lambda</span>以及每个时间步的<span class="math inline">\delta_t</span>之后，可以根据公式直接进行优势估计（下面的代码在<code>rl.utils.py</code>中已给出）。</p>
-<div id="888c4b63" class="cell" data-execution_count="29">
+<div id="a25351c5" class="cell" data-execution_count="29">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> compute_advantage(gamma, lmbda, td_delta):</span>
@@ -2294,7 +2295,7 @@ A_t^{GAE}&amp;=(1-\lambda)(A_t^{(1)}+\lambda A_t^{(2)}+\lambda^2 A_t^{(3)}+...)\
 <section id="trpo代码实践" class="level2" data-number="9.7">
 <h2 data-number="9.7" class="anchored" data-anchor-id="trpo代码实践"><span class="header-section-number">9.7</span> TRPO代码实践</h2>
 <p>首先导入一些必要的库</p>
-<div id="b680119b" class="cell" data-execution_count="30">
+<div id="66f43ec3" class="cell" data-execution_count="30">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
@@ -2307,7 +2308,7 @@ A_t^{GAE}&amp;=(1-\lambda)(A_t^{(1)}+\lambda A_t^{(2)}+\lambda^2 A_t^{(3)}+...)\
 </details>
 </div>
 <p>然后定义策略网络和价值网络以及TRPO算法，在动作时离散的情况下如下</p>
-<div id="de824ea0" class="cell" data-execution_count="31">
+<div id="b1ba6fde" class="cell" data-execution_count="31">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> PolicyNet(torch.nn.Module):</span>
@@ -2472,7 +2473,7 @@ A_t^{GAE}&amp;=(1-\lambda)(A_t^{(1)}+\lambda A_t^{(2)}+\lambda^2 A_t^{(3)}+...)\
 </details>
 </div>
 <p>而如果是与连续动作交互的环境，需要对上面的代码做一些修改。对于策略网络，因为环境是连续动作的，所以策略网络分别输出表示动作分布的高斯分布的均值和标准差。</p>
-<div id="ea135c59" class="cell" data-execution_count="32">
+<div id="0738bfc1" class="cell" data-execution_count="32">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> PolicyNetContinuous(torch.nn.Module):</span>
@@ -2756,7 +2757,7 @@ A_t^{GAE}&amp;=(1-\lambda)(A_t^{(1)}+\lambda A_t^{(2)}+\lambda^2 A_t^{(3)}+...)\
 <section id="ppo-代码实践" class="level2" data-number="10.5">
 <h2 data-number="10.5" class="anchored" data-anchor-id="ppo-代码实践"><span class="header-section-number">10.5</span> PPO 代码实践</h2>
 <p>下面我们在倒立摆环境中测试PPO算法，大量实验表明PPO-截断的表现总好于PPO-惩罚，因此我们下面专注于PPO-截断的代码实现。由于倒立摆是与连续动作交互的环境，同TRPO算法一样，我们让策略网络输出连续动作的高斯分布的均值和标准差，后续的连续动作则在该高斯分布中采样得到。</p>
-<div id="e5846f09" class="cell" data-execution_count="33">
+<div id="71831845" class="cell" data-execution_count="33">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> gym</span>
@@ -2888,7 +2889,7 @@ Tip
 \omega^-\leftarrow \tau \omega+(1-\tau)\omega^-
 </span> 通常<span class="math inline">\tau</span>是一个比较小的数，当<span class="math inline">\tau=1</span>时，就和DQN的更新方式一致。而目标<span class="math inline">\mu</span>网络也使用这种软更新的方式。</p>
 <p>另外，由于函数<span class="math inline">Q</span>存在<span class="math inline">Q</span>值过高估计的问题，DDPG采用了Double DQN中的技术来更新<span class="math inline">Q</span>网络。但是，由于DDPG采用的是确定性策略，它本身的探索仍然十分有限。回忆一下DQN算法，它的探索主要由<span class="math inline">\epsilon-</span>贪婪策略的行为策略产生。同样作为一种离线策略的算法，DDPG在行为策略上引入一个随机噪声<span class="math inline">\mathcal{N}</span>来进行探索，下面看一下DDPG的具体算法流程。</p>
-<div class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-line-number="true" data-no-end="false" data-pseudocode-number="1" data-comment-delimiter="//" data-indent-size="1.2em" data-line-number-punc=":">
+<div class="pseudocode-container quarto-float" data-line-number-punc=":" data-pseudocode-number="1" data-comment-delimiter="//" data-no-end="false" data-caption-prefix="Algorithm" data-line-number="true" data-indent-size="1.2em">
 <div class="pseudocode">
 \begin{algorithm} \caption{DDPG算法流程} \begin{algorithmic} \State 随机噪声可以用$\mathcal{N}$表示，用随机的网络参数$\omega$和$\theta$分别初始化Critic网络$Q_\omega(s,a)$和Actor网络$\mu_{\theta}(s)$ \State 复制相同的参数$\omega^-\leftarrow\omega,\theta^-\leftarrow\theta$,分别初始化目标网络$Q_{\omega^-},\mu_{\theta^-}$ \State 初始化经验放回斥$R$ \For{$e=1\rightarrow E$} \State 初始化随机过程$\mathcal{N}$用于动作探索 \State 获取环境初始状态$s_1$ \For{时间步$t=1\rightarrow T$} \State 根据当前策略和噪声选择动作$a_t=\mu_\theta(s_t)+\mathcal{N}$ \State 执行动作$a_t,$获得奖励$r_t,$环境状态变为$s_{t+1}$ \State 将$(s_t,a_t,r_t,s_{t+1})$存储进回放池$R$ \State 从$R$中采样$N$个元组$\{(s_i,a_i,r_i,s_{i+1})\}_{i=1,...,N}$ \State 对每个元组，用目标网络计算$y_i=r_i+\gamma Q_{\omega^-}(s_{i+1},\mu_{\theta^-}(s_{i+1}))$ \State 最小化目标损失函数$L=\frac{1}{N}\sum_{i=1}^N(y_i-Q_\omega(s_i,a_i))^2,$以此更新当前Critic网络 \State 计算采样的策略梯度，以此来更新当前Actor网络: $\nabla_\theta J\approx \frac{1}{N}\sum_{i=1}^N\nabla_\theta \mu_\theta(s_i)\nabla_a Q_\omega (s_i,a)|_{a=\mu_\theta(s_i)}$ \State 更新目标网络: $\omega^-\leftarrow \tau\omega+(1-\tau)\omega^-,\theta^-\leftarrow \tau\theta+(1-\tau)\theta^-$ \EndFor \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -2897,7 +2898,7 @@ Tip
 <section id="ddpg-代码实践" class="level2" data-number="11.3">
 <h2 data-number="11.3" class="anchored" data-anchor-id="ddpg-代码实践"><span class="header-section-number">11.3</span> DDPG 代码实践</h2>
 <p>对于策略网络和价值网络，我们都采用只有一层隐藏层的神经网络。策略网络的输出层用正切函数<span class="math inline">y=\tanh x</span>作为激活函数可以方便地按比例调整环境可以接受的动作范围。在DDPG中处理的是与连续动作交互的环境，<span class="math inline">Q</span>网络的输入是状态和动作拼接后的向量，<span class="math inline">Q</span>网络的输出是一个值，表示该状态动作对的价值。</p>
-<div id="1188d11c" class="cell" data-execution_count="34">
+<div id="5f86306d" class="cell" data-execution_count="34">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> PolicyNet(torch.nn.Module):</span>
@@ -2930,7 +2931,7 @@ Tip
 <p><span class="math display">
 \delta x_t=\theta(\mu-x_{t-1})+\sigma W,
 </span> 其中<span class="math inline">\mu</span>是均值，<span class="math inline">W</span>是服从布朗运动的随机噪声，<span class="math inline">\theta,\sigma</span>是比例参数。可以看出，当<span class="math inline">x_{t-1}</span>偏离均值时，<span class="math inline">x_t</span>会向均值靠拢。OU过程是与时间相关的，适用于有惯性的系统。在DDPG的实践中，不少地方仅使用正态分布的噪声，这里为了简单起见也使用正态分布的噪声，感兴趣的读者可以试试改为OU过程观察效果。</p>
-<div id="d1938bdd" class="cell" data-execution_count="35">
+<div id="7476114e" class="cell" data-execution_count="35">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> DDPG:</span>
@@ -3063,7 +3064,7 @@ L(\alpha)=\mathbb{E}_{s_t\sim R,a_t\sim\pi(\cdot|s_t)}[-\alpha\log\pi(a_t|s_t)-\
 </span> 即当策略的熵低于目标值<span class="math inline">\mathcal{H}_0</span> 时，训练目标<span class="math inline">L(\alpha)</span>会使<span class="math inline">\alpha</span>的值增大，进而在上述最小化损失函数<span class="math inline">L_\pi(\theta)</span>的过程中增加了策略熵对应项的重要性；而当策略的熵高于目标值<span class="math inline">\mathcal{H}_0</span>时，训练目标<span class="math inline">L(\alpha)</span>会使<span class="math inline">\alpha</span>的值减小，进而使得策略训练时更专注于价值提升。</p>
 <hr>
 <p>至此，我们介绍完了 SAC 算法的整体思想，它的具体算法流程如下：</p>
-<div class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-line-number="true" data-no-end="false" data-pseudocode-number="1" data-comment-delimiter="//" data-indent-size="1.2em" data-line-number-punc=":">
+<div class="pseudocode-container quarto-float" data-line-number-punc=":" data-pseudocode-number="1" data-comment-delimiter="//" data-no-end="false" data-caption-prefix="Algorithm" data-line-number="true" data-indent-size="1.2em">
 <div class="pseudocode">
 \begin{algorithm} \caption{SAC算法流程} \begin{algorithmic} \State 用随机的网络参数$\omega_1,\omega_2$和$\theta$分别初始化Critic网络$Q_{\omega_1}(s,a),Q_{\omega_2}(s,a)$和Actor网络$\pi_\theta(s)$ \State 复制相同的参数$\omega_1^-\leftarrow\omega_1,\omega_2^-\leftarrow\omega_2$,分别初始化目标网络$Q_{\omega_1^-},Q_{\omega_2}$ \State 初始化经验放回池$R$ \For{$e=1\rightarrow E$} \State 获取环境初始状态$s_1$ \For{时间步$t=1\rightarrow T$} \State 根据当前策略选择动作$a_t=\pi_\theta(s_t)$ \State 执行动作$a_t,$获得奖励$r_t,$环境状态变为$s_{t+1}$ \State 将$(s_t,a_t,r_t,s_{t+1})$存储进回放池$R$ \For{训练轮数$k=1\rightarrow K$} \State 从$R$中采样$N$个元组$\{(s_i,a_i,r_i,s_{i+1})\}_{i=1,...,N}$ \State 对每个元组，用目标网络计算 $y_i=r_i+\gamma \min_{j=1,2}Q_{\omega_j^-}(s_{i+1},a_{i+1})-\alpha \log\pi_\theta(a_{i+1}|s_{i+1})$,其中$a_{i+1}\sim \pi_\theta(\cdot|s_{i+1})$ \State 对两个Critic网络都进行如下更新:对$j=1,2$,最小化损失函数$L=\frac{1}{N}\sum_{i=1}^N(y_i-Q_{\omega_j}(s_i,a_i))^2$ \State 用重参数化技巧采样动作$\tilde{a}_i$,然后用以下损失函数更新当前Actor网络： $L_\pi(\theta)=\frac{1}{N}\left(\alpha\log\pi_\theta(\tilde{a}_i|s_i)-\min_{j=1,2}Q_{\omega_j}(s_i,\tilde{a}_i)\right)$ \State 更新正则项的系数$\alpha$ \State 更新目标网络 $\omega_1^-\leftarrow \tau\omega_1+(1-\tau)\omega_1^-,\omega_2^-\leftarrow \tau\omega_2+(1-\tau)\omega_2^-$ \EndFor \EndFor \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -3073,7 +3074,7 @@ L(\alpha)=\mathbb{E}_{s_t\sim R,a_t\sim\pi(\cdot|s_t)}[-\alpha\log\pi(a_t|s_t)-\
 <section id="sac-代码实践" class="level2" data-number="12.5">
 <h2 data-number="12.5" class="anchored" data-anchor-id="sac-代码实践"><span class="header-section-number">12.5</span> SAC 代码实践</h2>
 <p>引入必要的库之后，定义一下策略网络和价值网络。由于处理的是与连续动作交互的环境，策略网络输出一个高斯分布的均值和标准差来表示动作分布；而价值网络的输入是状态和动作的拼接向量，输出一个实数来表示动作价值。</p>
-<div id="44080e30" class="cell" data-execution_count="36">
+<div id="b0fbc79f" class="cell" data-execution_count="36">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> random</span>
@@ -3123,7 +3124,7 @@ L(\alpha)=\mathbb{E}_{s_t\sim R,a_t\sim\pi(\cdot|s_t)}[-\alpha\log\pi(a_t|s_t)-\
 </details>
 </div>
 <p>接下来看一下SAC算法的主要代码，如前面所述，SAC使用两个Critic网络<span class="math inline">Q_{\omega_1},Q_{\omega_2}</span>来使Actor的训练更加稳定，而这两个Critic网络在训练时各自需要一个目标价值网络，因此SAC算法一共用到5 个网络，分别是一个策略网络、两个价值网络和两个目标价值网络。</p>
-<div id="a8e93ca0" class="cell" data-execution_count="37">
+<div id="2fdc9d4f" class="cell" data-execution_count="37">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> SACContinuous:</span>
